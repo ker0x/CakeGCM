@@ -12,12 +12,12 @@ class GcmComponentTest extends CakeTestCase {
         $this->GcmComponent = new GcmComponent($Collection);
     }
 
-    public function testCheckEmptyParameters() {
-        $parameters = array();
-        $expected = array();
+    public function testSendWithoutApiKey() {
+        $ids = 'APA91bGi-XYHwGsmlVewZaamdKNUanc_AnZA-y3LnMpoiTyAGAEPnJ6F2IFhe6sBCn0e8y8FsuwzYoKoDpNuQAizgfrzT9jAb8eD88hWCBtsEpvKp_BrujkLJIljpBBkLtn86P5zT4Ke3QxqU8HENZy1zLC8qkVqzA';
+        $data = array('message' => 'Hello World');
 
-        $result   = $this->GcmComponent->_checkParameters($parameters);
-        $this->assertEquals($expected, $result);
+        $result = $this->GcmComponent->send($ids, $data);
+        $this->expectException('GcmException');
     }
 
     public function tearDown() {
