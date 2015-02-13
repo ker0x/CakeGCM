@@ -15,6 +15,10 @@
             "email": "monteil.romain@gmail.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/ker0x/CakeGCM/issues",
+        "source": "https://github.com/ker0x/CakeGCM"
+    },
     "require": {
         "php": ">=5.3.0",
         "composer/installers": "*"
