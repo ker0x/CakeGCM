@@ -17,7 +17,7 @@ class GcmComponentTest extends CakeTestCase {
         $expected = array();
 
         $result   = $this->GcmComponent->_checkParamaters($parameters);
-        $this->assertEquals($expected, $result)
+        $this->assertEquals($expected, $result);
     }
 
     public function tearDown() {
