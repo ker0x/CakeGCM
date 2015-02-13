@@ -16,7 +16,7 @@ class GcmComponentTest extends CakeTestCase {
         $parameters = array();
         $expected = array();
 
-        $result   = $this->GcmComponent->_checkParamaters($parameters);
+        $result   = $this->GcmComponent->_checkParameters($parameters);
         $this->assertEquals($expected, $result);
     }
 
