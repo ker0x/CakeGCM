@@ -7,11 +7,13 @@ class CreateShell extends AppShell {
 			$this->args = null;
 			return $this->DbConfig->execute();
 		}
+
 		$this->out(__d('gcm_console', 'Gcm Shell'));
 		$this->hr();
 		$this->out(__d('gcm_console', 'Creation of tables Devices and Notifications'));
 		$this->hr();
 		$this->dispatchShell('schema create Gcm --plugin Gcm');
+		
 		return true;
 	}
 }

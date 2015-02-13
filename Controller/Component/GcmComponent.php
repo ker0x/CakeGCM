@@ -4,7 +4,7 @@ App::uses('HttpSocket', 'Network/Http');
 App::uses('Hash', 'Utility');
 
 /**
-* Apns Exception classes
+* Gcm Exception classes
 */
 class GcmException extends CakeException {
 }
@@ -16,7 +16,7 @@ class GcmException extends CakeException {
 class GcmComponent extends Component {
 
 	/**
-	 * Settings for this object
+	 * Default options
 	 *
 	 * @var array
 	 */
@@ -24,6 +24,13 @@ class GcmComponent extends Component {
 		'api' => array(
 			'key' => null,
 			'url' => 'https://android.googleapis.com/gcm/send'
+		),
+		'parameters' => array(
+			'delay_while_idle' 		  => false,
+			'dry_run' 				  => false,
+			'time_to_live' 			  => 86400,
+			'collapse_key' 			  => null,
+			'restricted_package_name' => null
 		),
 		'model' => array(
 			'Device' => array(
@@ -46,21 +53,42 @@ class GcmComponent extends Component {
 	 *
 	 * @var array
 	 */
-	public $tokens = array();
+	protected $ids = array();
 
 	/**
 	 * Message to push to user
 	 *
 	 * @var string
 	 */
-	public $message = null;
+	protected $_data = null;
 
 	/**
-	 * Informations sent in the notification
+	 * Parameters for the notification
 	 *
 	 * @var array
 	 */
-	public $params = array();
+	protected $_parameters = array();
+
+	/**
+	 * Global notification (ids + data + parameters)
+	 *
+	 * @var array
+	 */
+	protected $_notification = array();
+
+	/**
+	 * Error code and message.
+	 *
+	 * @var array
+	 */
+	protected $_errorMessages = array();
+
+	/**
+	 * Response of the request
+	 *
+	 * @var object
+	 */
+	protected $_response = null;
 
 	/**
 	 * Controller reference
@@ -79,16 +107,21 @@ class GcmComponent extends Component {
 	 *
 	 * @param ComponentCollection $collection
 	 * @param array $settings
-	 * @return void
 	 */
 	public function __construct(ComponentCollection $collection, $settings = array()) {
 		$this->Collection = $collection;
 		$this->_defaults = Hash::merge($this->_defaults, $settings);
+
+		$this->_errorMessages = array(
+			'400' => __('Error 400. The request could not be parsed as JSON.'),
+			'401' => __('Error 401. Unable to authenticating the sender account.')
+		);
 	}
 
 	/**
-	 * Start up, gets an instance on the controller class,
+	 * Called before the Controller::beforeFilter().
 	 *
+	 * @param Controller $controller Controller with components to initialize
 	 * @return void
 	 */
 	public function initialize(Controller $controller) {
@@ -99,67 +132,139 @@ class GcmComponent extends Component {
 	}
 
 	/**
+	 * send method
 	 *
-	 * @param array $tokens
-	 * @param string $message
-	 * @param array $params
+	 * @param string|array $ids
+	 * @param array $data
+	 * @param array $parameters
 	 * @return void
 	 */
-	public function sendToAll($tokens = array(), $message = null, $params = array()) {
-		if (!is_array($tokens) || empty($tokens)) {
-			throw new GcmException(__('No tokens provide'));
-		}
-		if (is_null($message)) {
-			throw new GcmException(__('No message provide'));
+	public function send($ids = false, $data = array(), $parameters = array()) {
+
+		if (is_string($ids)) {
+			$ids = (array)$ids;
 		}
 
-		$this->tokens = $tokens;
-		$this->message = $message;
-		$this->params = $params;
+		if ($ids === false || !is_array($ids) || empty($ids)) {
+			throw new GcmException(__('Ids must be a string or an array.'));
+		}
 
-		$this->_formatNotification();
-		$this->_executePush();
-		$this->_addNotification();
+		if (!is_array($data)) {
+			throw new GcmException(__('Data must be an array.'));
+		}
+
+		if (!is_array($parameters)) {
+			throw new GcmException(__('Parameters must be an array.'));
+		}
+
+		$parameters = $this->_checkParameters($parameters);
+		if (!$parameters) {
+			throw new GcmException(__('Unable to check parameters.'));
+		}
+
+		$notification = $this->_buildNotification($ids, $data, $parameters);
+		if (!$notification) {
+			throw new GcmException(__('Unable to build the notification.'));
+		}
+
+		return $this->_executePush($notification);
 	}
 
 	/**
-	 * executePush method
+	 * response method
 	 *
-	 * @param array $data
-	 * @return array $response
+	 * @return void
 	 */
-	private function _executePush() {
+	public function response() {
+		if (array_key_exists($this->_response->code, $this->_errorMessages)) {
+			return $this->_errorMessages[$this->_response->code];
+		}
+
+		return json_decode($this->_response->body, true);
+	}
+
+	/**
+	 * _executePush method
+	 *
+	 * @param json $notification
+	 * @return bool
+	 */
+	protected function _executePush($notification = false) {
+		if ($notification === false) {
+			return false;
+		}
+
 		if (is_null($this->_defaults['api']['key'])) {
 			throw new GcmException(__('No API key set. Push not triggered'));
 		}
 
 		$httpSocket = new HttpSocket();
-		$response = $httpSocket->post($this->_defaults['api']['url'], json_encode($this->fields), array(
+		$this->_response = $httpSocket->post($this->_defaults['api']['url'], $notification, array(
 			'header' => array(
 				'Authorization' => 'key=' . $this->_defaults['api']['key'],
 				'Content-Type' => 'application/json'
 			)
 		));
-		return json_decode($response->body(), true);
-	}
 
-	private function _addNotification($tokens = array(), ) {
-
-	}
-
-	private function _formatNotification() {
-		$fields = array(
-			'registration_ids' => $this->tokens,
-			'data' => array(
-				'message' => $this->message
-			)
-		);
-		if (!empty($this->params)) {
-			foreach ($this->params as $param => $value) {
-				$fields['data'][$param] = $value;
-			}
+		if ($this->_response->code === '200') {
+			return true;
 		}
 
-		$this->fields = json_encode($fields);
+		return false;
+	}
+
+	/**
+	 * _buildNotification method
+	 *
+	 * @param array $ids
+	 * @param array $data
+	 * @param array $parameters
+	 * @return json
+	 */
+	protected function _buildNotification($ids = false, $data = false, $parameters = false) {
+		if ($ids === false) {
+			return false;
+		}
+
+		$notification = array('registration_ids' => $ids);
+
+		if (!empty($data)) {
+			$notification['data'] = $data;
+		}
+
+		if (!empty($parameters)) {
+			$notification += $parameters;
+		}
+
+		return json_encode($notification);
+	}
+
+	/**
+	 * _checkParameters method
+	 *
+	 * @param array $parameters
+	 * @return array $parameters
+	 */
+	protected function _checkParameters($parameters = false) {
+		if ($parameters === false) {
+			return false;
+		}
+
+		$parameters = Hash::merge($this->_defaults['parameters'], $parameters);
+		$parameters = array_filter($parameters);
+
+		if (isset($parameters['time_to_live']) && !is_int($parameters['time_to_live'])) {
+			$parameters['time_to_live'] = (int)$parameters['time_to_live'];
+		}
+
+		if (isset($parameters['delay_while_idle']) && !is_bool($parameters['delay_while_idle'])) {
+			$parameters['delay_while_idle'] = (bool)$parameters['delay_while_idle'];
+		}
+
+		if (isset($parameters['dry_run']) && !is_bool($parameters['dry_run'])) {
+			$parameters['dry_run'] = (bool)$parameters['dry_run'];
+		}
+
+		return $parameters;
 	}
 }
