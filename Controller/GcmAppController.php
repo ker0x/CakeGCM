@@ -20,10 +20,6 @@ class GcmAppController extends AppController {
  */
     public $components = array(
         'Session',
-        'Gcm.Gcm' => array(
-            'api' => array(
-                'key' => '*****'
-            )
-        )
+        'Gcm.Gcm'
     );
 }
