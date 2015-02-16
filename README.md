@@ -42,14 +42,14 @@ To get an API key, follow the instructions in this link: http://developer.androi
 
 Then, in an action of your Controller, add the following code:
 ```php
-if ($this->Gcm->send($ids, $data, $aparameters)) {
+if ($this->Gcm->send($ids, $data, $parameters)) {
     // do some stuff
 } else {
     // do other stuff
 }
 ```
 
-You could have the response of the request by using the function `response`:
+You could have the response of the request by using the function `response()`:
 ```php
 $response = $this->Gcm->response();
 ```
