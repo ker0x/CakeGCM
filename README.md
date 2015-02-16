@@ -4,10 +4,10 @@ CakeGCM is a plugin for CakePHP to send notification to an Android device throug
 
 ## Requirements
 
-* CakePHP >= 2.6
+* CakePHP >= 2.4
 
 ## Installation
-Run : `composer require ker0x/cake_gcm:*`
+Run : `composer require ker0x/cake_gcm:dev-master`
 Or add it in your `composer.json`:
 ``` php
 "require": {
@@ -18,7 +18,7 @@ Or add it in your `composer.json`:
 ### Enable plugin
 In your `app/Config/bootstrap.php` file add :
 ```php
-CakePlugin::load('CakeGCM');
+CakePlugin::load('Gcm');
 ```
 or uncomment :
 ```php
@@ -48,10 +48,62 @@ if ($this->Gcm->send($ids, $data, $parameters)) {
     // do other stuff
 }
 ```
+where:
+
+ * `$ids` is a string or an array of device ids. (required)
+ * `$data` is an array containing the data that will be passed to the notification. (optional)
+ * `$paramaters` is an array of parameters for the notification. (optional)
 
 You could have the response of the request by using the function `response()`:
 ```php
 $response = $this->Gcm->response();
+```
+## Examples
+
+Send an empty notification to a device:
+```php
+$this->Gcm->send('1');
+```
+
+Send a message to a device:
+```php
+$this->Gcm->send('1', array('message' => 'Hello World'));
+```
+
+Send a message to multiple devices:
+```php
+$this->Gcm->send(
+    array('1', '2', '3', '4'),
+    array('message' => 'Hello World')
+);
+```
+
+Send a notification with lots of data
+```php
+$this->Gcm->send(
+    array('1', '2', '3', '4'),
+    array(
+        'data-1' => 'Lorem ipsum',
+        'data-2' => 1234,
+        'data-3' => true,
+        'data-4' => array('1', '2', '3', '4')
+    )
+);
+```
+
+Send a notification with extra parameters:
+```php
+$this->Gcm->send(
+    array('1', '2', '3', '4'),
+    array('message' => 'Hello World'),
+    array(
+        'delay_while_idle' => true,
+        'dry_run' => false,
+        'time_to_live' => 86400,
+        'collapse_key' => 'Gcm',
+        'restricted_package_name' => 'my_awesome_package'
+    )
+);
 ```
 ## License
 
