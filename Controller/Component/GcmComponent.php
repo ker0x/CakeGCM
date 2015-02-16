@@ -22,13 +22,13 @@ class GcmComponent extends Component {
 	 */
 	public $_defaults = array(
 		'api' => array(
-			'key' => 'AIzaSyC-ap7h80fG3maLaKiHoN26gQIhks0zppc',
+			'key' => '',
 			'url' => 'https://android.googleapis.com/gcm/send'
 		),
 		'parameters' => array(
 			'delay_while_idle' 		  => false,
 			'dry_run' 				  => false,
-			'time_to_live' 			  => 86400,
+			'time_to_live' 			  => 0,
 			'collapse_key' 			  => null,
 			'restricted_package_name' => null
 		),

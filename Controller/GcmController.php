@@ -29,4 +29,8 @@ class GcmController extends GcmAppController {
 
 		$this->set('title', __('Google Cloud Messaging Plugin'));
 	}
+
+	public function test() {
+		debug($this->Gcm->_checkParameters(array())); die();
+	}
 }
