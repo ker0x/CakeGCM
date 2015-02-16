@@ -10,7 +10,7 @@ class GcmException extends CakeException {
 }
 
 /**
- * Notif Component
+ * Gcm Component
  *
  */
 class GcmComponent extends Component {
@@ -47,34 +47,6 @@ class GcmComponent extends Component {
 			)
 		)
 	);
-
-	/**
-	 * Array of devices's tokens
-	 *
-	 * @var array
-	 */
-	protected $ids = array();
-
-	/**
-	 * Message to push to user
-	 *
-	 * @var string
-	 */
-	protected $_data = null;
-
-	/**
-	 * Parameters for the notification
-	 *
-	 * @var array
-	 */
-	protected $_parameters = array();
-
-	/**
-	 * Global notification (ids + data + parameters)
-	 *
-	 * @var array
-	 */
-	protected $_notification = array();
 
 	/**
 	 * Error code and message.
