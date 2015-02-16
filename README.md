@@ -35,9 +35,24 @@ public $components = array(
     )
 );
 ```
+
 Replace `*****` by your API Key.
+
 To get an API key, follow the instructions in this link: http://developer.android.com/google/gcm/gs.html#access-key
 
+Then, in an action of your Controller, add the following code:
+```php
+if ($this->Gcm->send($ids, $data, $aparameters)) {
+    // do some stuff
+} else {
+    // do other stuff
+}
+```
+
+You could have the response of the request by using the function `response`:
+```php
+$response = $this->Gcm->response();
+```
 ## License
 
 The MIT License (MIT)
