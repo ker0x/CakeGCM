@@ -17,7 +17,7 @@ class GcmComponentTest extends CakeTestCase {
         $data = array('message' => 'Hello World');
         $parameters = array(
             'time_to_live' => 3600
-        )
+        );
 
         $result = $this->GcmComponent->send($ids, $data, $parameters);
         $this->assertTrue($result);
