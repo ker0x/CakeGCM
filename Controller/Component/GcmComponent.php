@@ -22,7 +22,7 @@ class GcmComponent extends Component {
 	 */
 	public $_defaults = array(
 		'api' => array(
-			'key' => 'AIzaSyC-ap7h80fG3maLaKiHoN26gQIhks0zppc',
+			'key' => 'AIzaSyB0AAdyphZk2aA1MU2wJB5hnOcwPwEnf6A',
 			'url' => 'https://android.googleapis.com/gcm/send'
 		),
 		'parameters' => array(
