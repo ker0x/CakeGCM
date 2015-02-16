@@ -11,7 +11,7 @@ Run : `composer require ker0x/cake_gcm:*`
 Or add it in your `composer.json`:
 ``` php
 "require": {
-    "ker0x/cake_gcm": "*"
+    "ker0x/cake_gcm": "dev-master"
 },
 ```
 
