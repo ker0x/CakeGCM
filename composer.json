@@ -24,6 +24,9 @@
         "composer/installers": "*"
     },
     "extra": {
-        "installer-name": "Gcm"
+        "installer-name": "Gcm",
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
     }
 }
