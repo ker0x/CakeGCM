@@ -1,52 +1,63 @@
 <?php
-App::uses('Component', 'Controller');
-App::uses('HttpSocket', 'Network/Http');
-App::uses('Hash', 'Utility');
-
 /**
-* Gcm Exception classes
-*/
-class GcmException extends CakeException {
-}
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Romain Monteil
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) Romain Monteil
+ * @link          http://cakephp.org CakePHP(tm) Project
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ */
+namespace Ker0x\Gcm\Controller\Component;
+
+use Cake\Controller\Component;
+use Cake\Controller\ComponentRegistry;
+use Cake\Core\Exception\Exception;
+use Cake\Network\Http\Client;
+use Cake\Utility\Hash;
 
 /**
  * Gcm Component
  *
  */
-class GcmComponent extends Component {
+class GcmComponent extends Component
+{
 
 	/**
-	 * Default options
+	 * Default config
 	 *
 	 * @var array
 	 */
-	public $_defaults = array(
-		'api' => array(
-			'key' => '',
+	protected $_defaultConfig = [
+		'api' => [
+			'key' => null,
 			'url' => 'https://android.googleapis.com/gcm/send'
-		),
-		'parameters' => array(
+		],
+		'parameters' => [
 			'delay_while_idle' 		  => false,
 			'dry_run' 				  => false,
 			'time_to_live' 			  => 0,
 			'collapse_key' 			  => null,
 			'restricted_package_name' => null
-		),
-		'model' => array(
-			'Device' => array(
+		],
+		'model' => [
+			'Device' => [
 				'alias'     => 'Device',
 				'scope'     => array(),
 				'recursive' => 0,
 				'contain'   => null
-			),
-			'Notification' => array(
+			],
+			'Notification' => [
 				'alias'     => 'Notification',
 				'scope'     => array(),
 				'recursive' => 0,
 				'contain'   => null
-			)
-		)
-	);
+			]
+		]
+	];
 
 	/**
 	 * Error code and message.
@@ -77,13 +88,11 @@ class GcmComponent extends Component {
 	/**
 	 * Constructor
 	 *
-	 * @param ComponentCollection $collection
-	 * @param array $settings
+	 * @param ComponentRegistry $collection A ComponentRegistry
+	 * @param array $config Array of configuration settings
 	 */
-	public function __construct(ComponentCollection $collection, $settings = array()) {
-		$this->Collection = $collection;
-		$this->_defaults = Hash::merge($this->_defaults, $settings);
-
+	public function __construct(ComponentRegistry $collection, array $config = [])
+	{
 		$this->_errorMessages = array(
 			'400' => __('Error 400. The request could not be parsed as JSON.'),
 			'401' => __('Error 401. Unable to authenticating the sender account.')
@@ -98,9 +107,7 @@ class GcmComponent extends Component {
 	 */
 	public function initialize(Controller $controller) {
 		$this->Controller = $controller;
-		foreach ($this->_defaults['model'] as $model) {
-			$this->{$model['alias']} = ClassRegistry::init($model['alias']);
-		}
+
 	}
 
 	/**
@@ -111,32 +118,32 @@ class GcmComponent extends Component {
 	 * @param array $parameters
 	 * @return void
 	 */
-	public function send($ids = false, $data = array(), $parameters = array()) {
-
+	public function send($ids = false, array $data = [], array $parameters = [])
+	{
 		if (is_string($ids)) {
 			$ids = (array)$ids;
 		}
 
 		if ($ids === false || !is_array($ids) || empty($ids)) {
-			throw new GcmException(__('Ids must be a string or an array.'));
+			throw new \LogicException(__('Ids must be a string or an array.'));
 		}
 
 		if (!is_array($data)) {
-			throw new GcmException(__('Data must be an array.'));
+			throw new \LogicException(__('Data must be an array.'));
 		}
 
 		if (!is_array($parameters)) {
-			throw new GcmException(__('Parameters must be an array.'));
+			throw new \LogicException(__('Parameters must be an array.'));
 		}
 
 		$parameters = $this->_checkParameters($parameters);
 		if (!$parameters) {
-			throw new GcmException(__('Unable to check parameters.'));
+			throw new \ErrorException(__('Unable to check parameters.'));
 		}
 
 		$notification = $this->_buildNotification($ids, $data, $parameters);
 		if (!$notification) {
-			throw new GcmException(__('Unable to build the notification.'));
+			throw new \ErrorException(__('Unable to build the notification.'));
 		}
 
 		return $this->_executePush($notification);
@@ -147,7 +154,8 @@ class GcmComponent extends Component {
 	 *
 	 * @return void
 	 */
-	public function response() {
+	public function response()
+	{
 		if (array_key_exists($this->_response->code, $this->_errorMessages)) {
 			return $this->_errorMessages[$this->_response->code];
 		}
@@ -161,22 +169,24 @@ class GcmComponent extends Component {
 	 * @param json $notification
 	 * @return bool
 	 */
-	protected function _executePush($notification = false) {
+	protected function _executePush($notification = false)
+	{
 		if ($notification === false) {
 			return false;
 		}
 
-		if (is_null($this->_defaults['api']['key'])) {
-			throw new GcmException(__('No API key set. Push not triggered'));
+		if (is_null($this->_config['api']['key'])) {
+			throw new \ErrorException(__('No API key set. Push not triggered'));
 		}
 
-		$httpSocket = new HttpSocket();
-		$this->_response = $httpSocket->post($this->_defaults['api']['url'], $notification, array(
-			'header' => array(
-				'Authorization' => 'key=' . $this->_defaults['api']['key'],
+		$http = new Client();
+		$this->_response = $http->post($this->_config['api']['url'], $notification, [
+			'type' => 'json',
+			'header' => [
+				'Authorization' => 'key=' . $this->config['api']['key'],
 				'Content-Type' => 'application/json'
-			)
-		));
+			]
+		]);
 
 		if ($this->_response->code === '200') {
 			return true;
@@ -193,12 +203,13 @@ class GcmComponent extends Component {
 	 * @param array $parameters
 	 * @return json
 	 */
-	protected function _buildNotification($ids = false, $data = false, $parameters = false) {
+	protected function _buildNotification($ids = false, $data = false, $parameters = false)
+	{
 		if ($ids === false) {
 			return false;
 		}
 
-		$notification = array('registration_ids' => $ids);
+		$notification = ['registration_ids' => $ids];
 
 		if (!empty($data)) {
 			$notification['data'] = $data;
@@ -217,12 +228,13 @@ class GcmComponent extends Component {
 	 * @param array $parameters
 	 * @return array $parameters
 	 */
-	protected function _checkParameters($parameters = false) {
+	protected function _checkParameters($parameters = false)
+	{
 		if ($parameters === false) {
 			return false;
 		}
 
-		$parameters = Hash::merge($this->_defaults['parameters'], $parameters);
+		$parameters = Hash::merge($this->_config['parameters'], $parameters);
 		$parameters = array_filter($parameters);
 
 		if (isset($parameters['time_to_live']) && !is_int($parameters['time_to_live'])) {
