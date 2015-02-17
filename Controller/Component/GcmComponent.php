@@ -20,7 +20,7 @@ class GcmComponent extends Component {
 	 *
 	 * @var array
 	 */
-	public $_defaults = array(
+	protected $_defaults = array(
 		'api' => array(
 			'key' => '',
 			'url' => 'https://android.googleapis.com/gcm/send'
@@ -135,7 +135,7 @@ class GcmComponent extends Component {
 		}
 
 		$notification = $this->_buildNotification($ids, $data, $parameters);
-		if (!$notification) {
+		if ($notification === false) {
 			throw new GcmException(__('Unable to build the notification.'));
 		}
 
@@ -166,7 +166,7 @@ class GcmComponent extends Component {
 			return false;
 		}
 
-		if (is_null($this->_defaults['api']['key'])) {
+		if ($this->_defaults['api']['key'] === null) {
 			throw new GcmException(__('No API key set. Push not triggered'));
 		}
 
