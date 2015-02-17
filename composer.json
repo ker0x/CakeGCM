@@ -28,12 +28,12 @@
     },
     "autoload": {
         "psr-4": {
-            "ker0w\\Gcm\\": "src"
+            "ker0x\\Gcm\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Ker0x\\Gcm\\Test\\": "tests"
+            "ker0x\\Gcm\\test\\": "tests"
         }
     }
 }
