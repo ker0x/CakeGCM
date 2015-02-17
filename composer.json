@@ -20,7 +20,7 @@
         "source": "https://github.com/ker0x/CakeGCM"
     },
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=5.4.0"
     },
     "require-dev": {
         "cakephp/cakephp": "3.0.*-dev",
