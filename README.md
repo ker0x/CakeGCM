@@ -4,7 +4,7 @@ CakeGCM is a plugin for CakePHP to send notification to an Android device throug
 
 ## Requirements
 
-* CakePHP >= 2.4
+* CakePHP >= 3.0
 
 ## Installation
 Run : `composer require ker0x/cake_gcm:dev-master`
@@ -16,27 +16,24 @@ Or add it in your `composer.json`:
 ```
 
 ### Enable plugin
-In your `app/Config/bootstrap.php` file add :
+In `config/bootstrap.php` file add :
 ```php
-CakePlugin::load('Gcm');
+Plugin::load('CakeGcm', ['autoload' => true]);
 ```
 or uncomment :
 ```php
-CakePlugin::loadAll();
+Plugin::loadAll();
 ```
 ### Usage
-In your `app/Controller/AppController.php` file add :
+In `src/Controller/AppController.php` file, add :
 ```php
-public $components = array(
-    'Gcm.Gcm' => array(
-        'api' => array(
-            'key' => '*****'
-        )
-    )
-);
+$this->loadComponent('CakeGcm.Gcm', [
+    'api' => [
+        'key' => '*****'
+    ]
+]);
 ```
-
-Replace `*****` by your API Key.
+in your Controller's initialize() method. Replace `*****` by your API Key.
 
 To get an API key, follow the instructions in this link: http://developer.android.com/google/gcm/gs.html#access-key
 
@@ -67,42 +64,44 @@ $this->Gcm->send('1');
 
 Send a message to a device:
 ```php
-$this->Gcm->send('1', array('message' => 'Hello World'));
+$this->Gcm->send('1', [
+    'message' => 'Hello World'
+]);
 ```
 
 Send a message to multiple devices:
 ```php
 $this->Gcm->send(
-    array('1', '2', '3', '4'),
-    array('message' => 'Hello World')
+    ['1', '2', '3', '4'],
+    ['message' => 'Hello World']
 );
 ```
 
 Send a notification with lots of data
 ```php
 $this->Gcm->send(
-    array('1', '2', '3', '4'),
-    array(
+    ['1', '2', '3', '4'],
+    [
         'data-1' => 'Lorem ipsum',
         'data-2' => 1234,
         'data-3' => true,
         'data-4' => array('1', '2', '3', '4')
-    )
+    ]
 );
 ```
 
 Send a notification with extra parameters:
 ```php
 $this->Gcm->send(
-    array('1', '2', '3', '4'),
-    array('message' => 'Hello World'),
-    array(
+    ['1', '2', '3', '4'],
+    ['message' => 'Hello World'],
+    [
         'delay_while_idle' => true,
         'dry_run' => false,
         'time_to_live' => 86400,
         'collapse_key' => 'Gcm',
         'restricted_package_name' => 'my_awesome_package'
-    )
+    ]
 );
 ```
 ## License

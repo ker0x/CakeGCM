@@ -30,12 +30,12 @@
     },
     "autoload": {
         "psr-4": {
-            "ker0x\\Gcm\\": "src"
+            "ker0x\\CakeGcm\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ker0x\\Gcm\\test\\": "tests"
+            "ker0x\\CakeGcm\\Test\\": "tests"
         }
     }
 }
