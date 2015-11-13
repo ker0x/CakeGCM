@@ -144,6 +144,32 @@ class GcmComponent extends Component {
 	}
 
 	/**
+	 * sendNotification method
+	 *
+	 * @param string|array $ids
+	 * @param array $data
+	 * @param array $parameters
+	 * @param string $field
+	 * @return void
+	 */
+	public function sendNotification($ids = false, $data = array(), $parameters = array()) {
+		return $this->send($ids, $data, $parameters, 'notification');
+	}
+
+	/**
+	 * sendData method
+	 *
+	 * @param string|array $ids
+	 * @param array $data
+	 * @param array $parameters
+	 * @param string $field
+	 * @return void
+	 */
+	public function sendData($ids = false, $data = array(), $parameters = array()) {
+		return $this->send($ids, $data, $parameters, 'data');
+	}
+
+	/**
 	 * response method
 	 *
 	 * @return void
