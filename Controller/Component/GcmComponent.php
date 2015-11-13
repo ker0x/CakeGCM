@@ -228,6 +228,11 @@ class GcmComponent extends Component {
 
 		$notification = array('registration_ids' => $ids);
 
+		if ($field === 'notification' && isset($data['message'])) {
+			$data['body'] = $data['message'];
+			unset($data['message']);
+		}
+
 		if (!empty($data)) {
 			$notification[$field] = $data;
 		}
