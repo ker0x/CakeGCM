@@ -109,9 +109,10 @@ class GcmComponent extends Component {
 	 * @param string|array $ids
 	 * @param array $data
 	 * @param array $parameters
+	 * @param string $field
 	 * @return void
 	 */
-	public function send($ids = false, $data = array(), $parameters = array()) {
+	public function send($ids = false, $data = array(), $parameters = array(), $field = 'data') {
 
 		if (is_string($ids)) {
 			$ids = (array)$ids;
@@ -134,7 +135,7 @@ class GcmComponent extends Component {
 			throw new GcmException(__('Unable to check parameters.'));
 		}
 
-		$notification = $this->_buildNotification($ids, $data, $parameters);
+		$notification = $this->_buildNotification($ids, $data, $parameters, $field);
 		if ($notification === false) {
 			throw new GcmException(__('Unable to build the notification.'));
 		}
@@ -191,9 +192,10 @@ class GcmComponent extends Component {
 	 * @param array $ids
 	 * @param array $data
 	 * @param array $parameters
+	 * @param string $field
 	 * @return json
 	 */
-	protected function _buildNotification($ids = false, $data = false, $parameters = false) {
+	protected function _buildNotification($ids = false, $data = false, $parameters = false, $field = 'data') {
 		if ($ids === false) {
 			return false;
 		}
@@ -201,7 +203,7 @@ class GcmComponent extends Component {
 		$notification = array('registration_ids' => $ids);
 
 		if (!empty($data)) {
-			$notification['data'] = $data;
+			$notification[$field] = $data;
 		}
 
 		if (!empty($parameters)) {
