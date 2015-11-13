@@ -23,7 +23,7 @@ class GcmComponent extends Component {
 	protected $_defaults = array(
 		'api' => array(
 			'key' => '',
-			'url' => 'https://android.googleapis.com/gcm/send'
+			'url' => 'https://gcm-http.googleapis.com/gcm/send'
 		),
 		'parameters' => array(
 			'delay_while_idle' 		  => false,
