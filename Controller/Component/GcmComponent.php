@@ -23,7 +23,7 @@ class GcmComponent extends Component {
 	protected $_defaults = array(
 		'api' => array(
 			'key' => '',
-			'url' => 'https://android.googleapis.com/gcm/send'
+			'url' => 'https://gcm-http.googleapis.com/gcm/send'
 		),
 		'parameters' => array(
 			'delay_while_idle' 		  => false,
@@ -109,9 +109,10 @@ class GcmComponent extends Component {
 	 * @param string|array $ids
 	 * @param array $data
 	 * @param array $parameters
+	 * @param string $field
 	 * @return void
 	 */
-	public function send($ids = false, $data = array(), $parameters = array()) {
+	public function send($ids = false, $data = array(), $parameters = array(), $field = 'data') {
 
 		if (is_string($ids)) {
 			$ids = (array)$ids;
@@ -134,12 +135,38 @@ class GcmComponent extends Component {
 			throw new GcmException(__('Unable to check parameters.'));
 		}
 
-		$notification = $this->_buildNotification($ids, $data, $parameters);
+		$notification = $this->_buildNotification($ids, $data, $parameters, $field);
 		if ($notification === false) {
 			throw new GcmException(__('Unable to build the notification.'));
 		}
 
 		return $this->_executePush($notification);
+	}
+
+	/**
+	 * sendNotification method
+	 *
+	 * @param string|array $ids
+	 * @param array $data
+	 * @param array $parameters
+	 * @param string $field
+	 * @return void
+	 */
+	public function sendNotification($ids = false, $data = array(), $parameters = array()) {
+		return $this->send($ids, $data, $parameters, 'notification');
+	}
+
+	/**
+	 * sendData method
+	 *
+	 * @param string|array $ids
+	 * @param array $data
+	 * @param array $parameters
+	 * @param string $field
+	 * @return void
+	 */
+	public function sendData($ids = false, $data = array(), $parameters = array()) {
+		return $this->send($ids, $data, $parameters, 'data');
 	}
 
 	/**
@@ -191,17 +218,23 @@ class GcmComponent extends Component {
 	 * @param array $ids
 	 * @param array $data
 	 * @param array $parameters
+	 * @param string $field
 	 * @return json
 	 */
-	protected function _buildNotification($ids = false, $data = false, $parameters = false) {
+	protected function _buildNotification($ids = false, $data = false, $parameters = false, $field = 'data') {
 		if ($ids === false) {
 			return false;
 		}
 
 		$notification = array('registration_ids' => $ids);
 
+		if ($field === 'notification' && isset($data['message'])) {
+			$data['body'] = $data['message'];
+			unset($data['message']);
+		}
+
 		if (!empty($data)) {
-			$notification['data'] = $data;
+			$notification[$field] = $data;
 		}
 
 		if (!empty($parameters)) {

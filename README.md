@@ -46,7 +46,7 @@ To get an API key, follow the instructions in this link: http://developer.androi
 
 Then, in an action of your Controller, add the following code:
 ```php
-if ($this->Gcm->send($ids, $data, $parameters)) {
+if ($this->Gcm->sendNotification($ids, $data, $parameters)) {
     // do some stuff
 } else {
     // do other stuff
@@ -71,20 +71,20 @@ $this->Gcm->send('1');
 
 Send a message to a device:
 ```php
-$this->Gcm->send('1', array('message' => 'Hello World'));
+$this->Gcm->sendNotification('1', array('body' => 'Hello World'));
 ```
 
 Send a message to multiple devices:
 ```php
-$this->Gcm->send(
+$this->Gcm->sendNotification(
     array('1', '2', '3', '4'),
-    array('message' => 'Hello World')
+    array('body' => 'Hello World')
 );
 ```
 
 Send a notification with lots of data
 ```php
-$this->Gcm->send(
+$this->Gcm->sendData(
     array('1', '2', '3', '4'),
     array(
         'data-1' => 'Lorem ipsum',
@@ -97,9 +97,9 @@ $this->Gcm->send(
 
 Send a notification with extra parameters:
 ```php
-$this->Gcm->send(
+$this->Gcm->sendNotification(
     array('1', '2', '3', '4'),
-    array('message' => 'Hello World'),
+    array('body' => 'Hello World'),
     array(
         'delay_while_idle' => true,
         'dry_run' => false,
