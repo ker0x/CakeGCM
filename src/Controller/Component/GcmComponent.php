@@ -46,13 +46,13 @@ class GcmComponent extends Component
 		'model' => [
 			'Device' => [
 				'alias'     => 'Device',
-				'scope'     => array(),
+				'scope'     => [],
 				'recursive' => 0,
 				'contain'   => null
 			],
 			'Notification' => [
 				'alias'     => 'Notification',
-				'scope'     => array(),
+				'scope'     => [],
 				'recursive' => 0,
 				'contain'   => null
 			]
@@ -64,7 +64,7 @@ class GcmComponent extends Component
 	 *
 	 * @var array
 	 */
-	protected $_errorMessages = array();
+	protected $_errorMessages = [];
 
 	/**
 	 * Response of the request
@@ -93,10 +93,10 @@ class GcmComponent extends Component
 	 */
 	public function __construct(ComponentRegistry $collection, array $config = [])
 	{
-		$this->_errorMessages = array(
+		$this->_errorMessages = [
 			'400' => __('Error 400. The request could not be parsed as JSON.'),
 			'401' => __('Error 401. Unable to authenticating the sender account.')
-		);
+		];
 	}
 
 	/**
@@ -142,7 +142,7 @@ class GcmComponent extends Component
 		}
 
 		$notification = $this->_buildNotification($ids, $data, $parameters);
-		if (!$notification) {
+		if ($notification === false) {
 			throw new \ErrorException(__('Unable to build the notification.'));
 		}
 
@@ -175,7 +175,7 @@ class GcmComponent extends Component
 			return false;
 		}
 
-		if (is_null($this->_config['api']['key'])) {
+		if ($this->_config['api']['key'] === null) {
 			throw new \ErrorException(__('No API key set. Push not triggered'));
 		}
 
