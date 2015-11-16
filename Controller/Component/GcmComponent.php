@@ -87,9 +87,6 @@ class GcmComponent extends Component {
 	 */
 	public function initialize(Controller $controller) {
 		$this->Controller = $controller;
-		foreach ($this->_defaults['model'] as $model) {
-			$this->{$model['alias']} = ClassRegistry::init($model['alias']);
-		}
 	}
 
 	/**
@@ -251,12 +248,12 @@ class GcmComponent extends Component {
 			return false;
 		}
 
-		if (!is_array($notification))) {
+		if (!is_array($notification)) {
 			throw new GcmException("Notification must be an array.");
 		}
 
 		if (empty($notification) || !isset($notification['title'])) {
-			throw new GcmException("Notification's array must contain at least a key title.")
+			throw new GcmException("Notification's array must contain at least a key title.");
 		}
 
 		if (!isset($notification['icon'])) {
@@ -282,12 +279,12 @@ class GcmComponent extends Component {
 		}
 
 		if (empty($data)) {
-			throw new GcmException("Data's array can't be empty.")
+			throw new GcmException("Data's array can't be empty.");
 		}
 
 		// Convert all data into string
 		foreach ($data as $key => $value) {
-			$payload['data'][$key] = strval($value);
+			$data[$key] = strval($value);
 		}
 
 		return $data;

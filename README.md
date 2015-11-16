@@ -84,6 +84,7 @@ $this->Gcm->sendNotification('1', array(
     'title' => 'Hello World', 
     'body' => 'My awesome Hellow World!'
 ));
+```
 
 Send a notification to multiple devices:
 ```php
@@ -116,20 +117,19 @@ $this->Gcm->send(
         'data' => array(
             'data-1' => 'Lorem ipsum',
             'data-2' => '1234',
-            'data-3' => 'true',
-            'data-4' => array('1', '2', '3', '4')
+            'data-3' => 'true'
         )
     )
 );
 ```
 or
+```php
 $this->Gcm->sendData(
     array('1', '2', '3', '4'),
     array(
         'data-1' => 'Lorem ipsum',
         'data-2' => 1234,
-        'data-3' => true,
-        'data-4' => array('1', '2', '3', '4')
+        'data-3' => true
     )
 );
 ```
@@ -146,8 +146,7 @@ $this->Gcm->send(
         'data' => array(
             'data-1' => 'Lorem ipsum',
             'data-2' => 1234,
-            'data-3' => true,
-            'data-4' => array('1', '2', '3', '4')
+            'data-3' => true
         )
     )
 );
