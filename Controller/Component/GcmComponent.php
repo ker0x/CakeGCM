@@ -26,25 +26,12 @@ class GcmComponent extends Component {
 			'url' => 'https://gcm-http.googleapis.com/gcm/send'
 		),
 		'parameters' => array(
-			'delay_while_idle' 		  => false,
-			'dry_run' 				  => false,
-			'time_to_live' 			  => 0,
-			'collapse_key' 			  => null,
+			'collapse_key' => null,
+			'priority' => 'normal',
+			'delay_while_idle' => false,
+			'dry_run' => false,
+			'time_to_live' => 2419200,
 			'restricted_package_name' => null
-		),
-		'model' => array(
-			'Device' => array(
-				'alias'     => 'Device',
-				'scope'     => array(),
-				'recursive' => 0,
-				'contain'   => null
-			),
-			'Notification' => array(
-				'alias'     => 'Notification',
-				'scope'     => array(),
-				'recursive' => 0,
-				'contain'   => null
-			)
 		)
 	);
 
@@ -85,8 +72,10 @@ class GcmComponent extends Component {
 		$this->_defaults = Hash::merge($this->_defaults, $settings);
 
 		$this->_errorMessages = array(
-			'400' => __('Error 400. The request could not be parsed as JSON.'),
-			'401' => __('Error 401. Unable to authenticating the sender account.')
+			'400' => __('Error 400. The request could not be parsed as JSON or contained invalid fields.'),
+			'401' => __('Error 401. Unable to authenticating the sender account.'),
+			'500' => __('Error 500. Internal Server Error.'),
+			'503' => __('Error 503. Service Unavailable.')
 		);
 	}
 
@@ -112,32 +101,46 @@ class GcmComponent extends Component {
 	 * @param string $field
 	 * @return void
 	 */
-	public function send($ids = false, $data = array(), $parameters = array(), $field = 'data') {
+	public function send($ids = false, $payload = array(), $parameters = array()) {
 
 		if (is_string($ids)) {
 			$ids = (array)$ids;
 		}
 
 		if ($ids === false || !is_array($ids) || empty($ids)) {
-			throw new GcmException(__('Ids must be a string or an array.'));
+			throw new GcmException(__("Ids must be a string or an array."));
 		}
 
-		if (!is_array($data)) {
-			throw new GcmException(__('Data must be an array.'));
+		if (!is_array($payload)) {
+			throw new GcmException(__("Payload must be an array."));
 		}
 
 		if (!is_array($parameters)) {
-			throw new GcmException(__('Parameters must be an array.'));
+			throw new GcmException(__("Parameters must be an array."));
+		}
+
+		if (isset($payload['notification'])) {
+			$payload['notification'] = $this->_checkNotification($payload['notification']);
+			if (!$payload['notification']) {
+				throw new GcmException(__("Unable to check notification."));
+			}
+		}
+
+		if (isset($payload['data'])) {
+			$payload['data'] = $this->_checkData($payload['data']);
+			if (!$payload['data']) {
+				throw new GcmException(__("Unable to check data."));
+			}
 		}
 
 		$parameters = $this->_checkParameters($parameters);
 		if (!$parameters) {
-			throw new GcmException(__('Unable to check parameters.'));
+			throw new GcmException(__("Unable to check parameters."));
 		}
 
-		$notification = $this->_buildNotification($ids, $data, $parameters, $field);
+		$notification = $this->_buildMessage($ids, $payload, $parameters);
 		if ($notification === false) {
-			throw new GcmException(__('Unable to build the notification.'));
+			throw new GcmException(__("Unable to build the message."));
 		}
 
 		return $this->_executePush($notification);
@@ -147,13 +150,12 @@ class GcmComponent extends Component {
 	 * sendNotification method
 	 *
 	 * @param string|array $ids
-	 * @param array $data
+	 * @param array $notification
 	 * @param array $parameters
-	 * @param string $field
 	 * @return void
 	 */
-	public function sendNotification($ids = false, $data = array(), $parameters = array()) {
-		return $this->send($ids, $data, $parameters, 'notification');
+	public function sendNotification($ids = false, $notification = array(), $parameters = array()) {
+		return $this->send($ids, array('notification' => $notification), $parameters);
 	}
 
 	/**
@@ -162,11 +164,10 @@ class GcmComponent extends Component {
 	 * @param string|array $ids
 	 * @param array $data
 	 * @param array $parameters
-	 * @param string $field
 	 * @return void
 	 */
 	public function sendData($ids = false, $data = array(), $parameters = array()) {
-		return $this->send($ids, $data, $parameters, 'data');
+		return $this->send($ids, array('data' => $data), $parameters);
 	}
 
 	/**
@@ -194,7 +195,7 @@ class GcmComponent extends Component {
 		}
 
 		if ($this->_defaults['api']['key'] === null) {
-			throw new GcmException(__('No API key set. Push not triggered'));
+			throw new GcmException(__("No API key set. Push not triggered"));
 		}
 
 		$httpSocket = new HttpSocket();
@@ -221,27 +222,75 @@ class GcmComponent extends Component {
 	 * @param string $field
 	 * @return json
 	 */
-	protected function _buildNotification($ids = false, $data = false, $parameters = false, $field = 'data') {
+	protected function _buildMessage($ids = false, $payload = false, $parameters = false) {
 		if ($ids === false) {
 			return false;
 		}
 
-		$notification = array('registration_ids' => $ids);
+		$message = array('registration_ids' => $ids);
 
-		if ($field === 'notification' && isset($data['message'])) {
-			$data['body'] = $data['message'];
-			unset($data['message']);
-		}
-
-		if (!empty($data)) {
-			$notification[$field] = $data;
+		if (!empty($payload)) {
+			$message += $payload;
 		}
 
 		if (!empty($parameters)) {
-			$notification += $parameters;
+			$message += $parameters;
 		}
 
-		return json_encode($notification);
+		return json_encode($message);
+	}
+
+	/**
+	 * _checkNotification method
+	 *
+	 * @param array $notification
+	 * @return array $notification
+	 */
+	protected function _checkNotification($notification = false) {
+		if ($notification === false) {
+			return false;
+		}
+
+		if (!is_array($notification))) {
+			throw new GcmException("Notification must be an array.");
+		}
+
+		if (empty($notification) || !isset($notification['title'])) {
+			throw new GcmException("Notification's array must contain at least a key title.")
+		}
+
+		if (!isset($notification['icon'])) {
+			$notification['icon'] = 'myicon';
+		}
+
+		return $notification;
+	}
+
+	/**
+	 * _checkData method
+	 *
+	 * @param array $data
+	 * @return array $data
+	 */
+	public function _checkData($data = false) {
+		if ($data === false) {
+			return false;
+		}
+
+		if (!is_array($data)) {
+			throw new GcmException("Data must ba an array.");
+		}
+
+		if (empty($data)) {
+			throw new GcmException("Data's array can't be empty.")
+		}
+
+		// Convert all data into string
+		foreach ($data as $key => $value) {
+			$payload['data'][$key] = strval($value);
+		}
+
+		return $data;
 	}
 
 	/**

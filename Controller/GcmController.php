@@ -14,11 +14,11 @@ class GcmController extends GcmAppController {
 	public function index() {
 		if ($this->request->is('post')) {
 
-			$ids 		= $this->request->data['Gcm']['ids'];
-			$data 		= $this->request->data['Gcm']['data'];
+			$ids = $this->request->data['Gcm']['ids'];
+			$payload = $this->request->data['Gcm']['payload'];
 			$parameters = $this->request->data['Gcm']['parameters'];
 
-			if ($this->Gcm->send($ids, $data, $parameters)) {
+			if ($this->Gcm->send($ids, $payload, $parameters)) {
 				$this->Session->setFlash(__('Notification sucessfully send.'), 'default', array('class' => 'success'));
 			} else {
 				$this->Session->setFlash(__('Unable to send notification.'));

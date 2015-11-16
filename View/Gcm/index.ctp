@@ -11,10 +11,14 @@
             </div>
         <?php endif ?>
         <?php echo $this->Form->input('ids', array(
-            'value' => 'APA91bFvwEw7oiZRhnnOFP8EO6G-7UV2ioN4n-RdSjRHqpSr3tOLcsYFxrKfectHCqcZZTm81m0f8Nt6VIkvj4UO1UXJuffDQXD0XPEvXVgLSlgPLxppK3zPdHZO3yuDtC9y4GA4PjjuUFkQ0QKjdHLD735Pwpahqw',
-            'label' => 'Token :'
+            'label' => 'Token (required) :'
         )); ?>
-        <?php echo $this->Form->input('Gcm.data.message', array(
+        <?php echo $this->Form->input('Gcm.payload.notification.title', array(
+            'type' => 'text',
+            'label' => 'Title (required) :',
+            'required' => true
+        )) ?>
+        <?php echo $this->Form->input('Gcm.payload.notification.body', array(
             'type' => 'textarea',
             'label' => 'Message :'
         )) ?>
