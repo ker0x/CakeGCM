@@ -1,6 +1,10 @@
 # CakeGCM
 
-CakeGCM is a plugin for CakePHP to send notification to an Android device through Google Cloud Messaging
+CakeGCM is a plugin for CakePHP to send downstream message to an Android or iOS device through Google Cloud Messaging
+
+[![Scrutinizer](https://img.shields.io/scrutinizer/g/ker0x/CakeGCM.svg?style=flat-square)](https://scrutinizer-ci.com/g/ker0x/CakeGCM/?branch=cake3)
+[![Total Downloads](https://img.shields.io/packagist/dt/ker0x/cake_gcm.svg?style=flat-square)](https://packagist.org/packages/ker0x/cake_gcm)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://packagist.org/packages/ker0x/cake_gcm)
 
 ## Requirements
 
@@ -48,7 +52,7 @@ if ($this->Gcm->send($ids, $data, $parameters)) {
 where:
 
  * `$ids` is a string or an array of device ids. (required)
- * `$data` is an array containing the data that will be passed to the notification. (optional)
+ * `$payload` is an array containing the notification and/or some datas that will be passed to a device. (optional)
  * `$paramaters` is an array of parameters for the notification. (optional)
 
 You could have the response of the request by using the function `response()`:
@@ -62,18 +66,43 @@ Send an empty notification to a device:
 $this->Gcm->send('1');
 ```
 
-Send a message to a device:
+Send a notification to a device:
 ```php
 $this->Gcm->send('1', [
-    'message' => 'Hello World'
+    'notification' => [
+        'title' => 'Hello World', 
+        'body' => 'My awesome Hellow World!'
+    ]
+]);
+```
+or
+```php
+$this->Gcm->sendNotification('1', [
+    'title' => 'Hello World', 
+    'body' => 'My awesome Hellow World!'
 ]);
 ```
 
-Send a message to multiple devices:
+Send a notification to multiple devices:
 ```php
 $this->Gcm->send(
     ['1', '2', '3', '4'],
-    ['message' => 'Hello World']
+    [
+        'notification' => [
+            'title' => 'Hello World', 
+            'body' => 'My awesome Hellow World!'
+        ]
+    ]
+);
+```
+or
+```php
+$this->Gcm->sendNotification(
+    ['1', '2', '3', '4'],
+    [
+        'title' => 'Hello World', 
+        'body' => 'My awesome Hellow World!'
+    ]
 );
 ```
 
@@ -84,17 +113,64 @@ $this->Gcm->send(
     [
         'data-1' => 'Lorem ipsum',
         'data-2' => 1234,
-        'data-3' => true,
-        'data-4' => array('1', '2', '3', '4')
+        'data-3' => true
+    ]
+);
+```
+
+Send datas to a device:
+```php
+$this->Gcm->send(
+    ['1', '2', '3', '4'],
+    [
+        'data' => [
+            'data-1' => 'Lorem ipsum',
+            'data-2' => '1234',
+            'data-3' => 'true'
+        ]
+    ]
+);
+```
+or
+```php
+$this->Gcm->sendData(
+    ['1', '2', '3', '4'],
+    [
+        'data-1' => 'Lorem ipsum',
+        'data-2' => 1234,
+        'data-3' => true
+    ]
+);
+```
+
+Send a notification and some datas to a device at the same time:
+```php
+$this->Gcm->send(
+    ['1', '2', '3', '4'],
+    [
+        'notification' => [
+            'title' => 'Hello World', 
+            'body' => 'My awesome Hellow World!'
+        ],
+        'data' => [
+            'data-1' => 'Lorem ipsum',
+            'data-2' => 1234,
+            'data-3' => true
+        ]
     ]
 );
 ```
 
 Send a notification with extra parameters:
 ```php
-$this->Gcm->send(
+$this->Gcm->sendNotification(
     ['1', '2', '3', '4'],
-    ['message' => 'Hello World'],
+    [
+        'notification' => [
+            'title' => 'Hello World',
+            'body' => 'My awesome Hello World!'
+        ]
+    ],
     [
         'delay_while_idle' => true,
         'dry_run' => false,

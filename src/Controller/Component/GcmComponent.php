@@ -34,28 +34,15 @@ class GcmComponent extends Component
 	protected $_defaultConfig = [
 		'api' => [
 			'key' => null,
-			'url' => 'https://android.googleapis.com/gcm/send'
+			'url' => 'https://gcm-http.googleapis.com/gcm/send'
 		],
 		'parameters' => [
-			'delay_while_idle' 		  => false,
-			'dry_run' 				  => false,
-			'time_to_live' 			  => 0,
-			'collapse_key' 			  => null,
+			'collapse_key' => null,
+			'priority' => 'normal',
+			'delay_while_idle' => false,
+			'dry_run' => false,
+			'time_to_live' => 0,
 			'restricted_package_name' => null
-		],
-		'model' => [
-			'Device' => [
-				'alias'     => 'Device',
-				'scope'     => [],
-				'recursive' => 0,
-				'contain'   => null
-			],
-			'Notification' => [
-				'alias'     => 'Notification',
-				'scope'     => [],
-				'recursive' => 0,
-				'contain'   => null
-			]
 		]
 	];
 
@@ -95,7 +82,9 @@ class GcmComponent extends Component
 	{
 		$this->_errorMessages = [
 			'400' => __('Error 400. The request could not be parsed as JSON.'),
-			'401' => __('Error 401. Unable to authenticating the sender account.')
+			'401' => __('Error 401. Unable to authenticating the sender account.'),
+			'500' => __('Error 500. Internal Server Error.'),
+			'503' => __('Error 503. Service Unavailable.')
 		];
 	}
 
@@ -107,7 +96,6 @@ class GcmComponent extends Component
 	 */
 	public function initialize(Controller $controller) {
 		$this->Controller = $controller;
-
 	}
 
 	/**
@@ -118,7 +106,7 @@ class GcmComponent extends Component
 	 * @param array $parameters
 	 * @return void
 	 */
-	public function send($ids = false, array $data = [], array $parameters = [])
+	public function send($ids = false, array $payload = [], array $parameters = [])
 	{
 		if (is_string($ids)) {
 			$ids = (array)$ids;
@@ -128,7 +116,7 @@ class GcmComponent extends Component
 			throw new \LogicException(__('Ids must be a string or an array.'));
 		}
 
-		if (!is_array($data)) {
+		if (!is_array($payload)) {
 			throw new \LogicException(__('Data must be an array.'));
 		}
 
@@ -136,17 +124,57 @@ class GcmComponent extends Component
 			throw new \LogicException(__('Parameters must be an array.'));
 		}
 
+		if (isset($payload['notification'])) {
+			$payload['notification'] = $this->_checkNotification($payload['notification']);
+			if (!$payload['notification']) {
+				throw new \LogicException(__("Unable to check notification."));
+			}
+		}
+
+		if (isset($payload['data'])) {
+			$payload['data'] = $this->_checkData($payload['data']);
+			if (!$payload['data']) {
+				throw new \LogicException(__("Unable to check data."));
+			}
+		}
+
 		$parameters = $this->_checkParameters($parameters);
 		if (!$parameters) {
 			throw new \ErrorException(__('Unable to check parameters.'));
 		}
 
-		$notification = $this->_buildNotification($ids, $data, $parameters);
+		$notification = $this->_buildMessage($ids, $payload, $parameters);
 		if ($notification === false) {
 			throw new \ErrorException(__('Unable to build the notification.'));
 		}
 
 		return $this->_executePush($notification);
+	}
+
+	/**
+	 * sendNotification method
+	 *
+	 * @param string|array $ids
+	 * @param array $notification
+	 * @param array $parameters
+	 * @return void
+	 */
+	public function sendNotification($ids = false, array $notification = [], array $parameters = []) 
+	{
+		return $this->send($ids, ['notification' => $notification], $parameters);
+	}
+
+	/**
+	 * sendData method
+	 *
+	 * @param string|array $ids
+	 * @param array $data
+	 * @param array $parameters
+	 * @return void
+	 */
+	public function sendData($ids = false, array $data = [], array $parameters = []) 
+	{
+		return $this->send($ids, ['data' => $data], $parameters);
 	}
 
 	/**
@@ -203,23 +231,78 @@ class GcmComponent extends Component
 	 * @param array $parameters
 	 * @return json
 	 */
-	protected function _buildNotification($ids = false, $data = false, $parameters = false)
+	protected function _buildMessage($ids = false, $payload = false, $parameters = false)
 	{
 		if ($ids === false) {
 			return false;
 		}
 
-		$notification = ['registration_ids' => $ids];
+		$message = ['registration_ids' => $ids];
 
-		if (!empty($data)) {
-			$notification['data'] = $data;
+		if (!empty($payload)) {
+			$message += $payload;
 		}
 
 		if (!empty($parameters)) {
-			$notification += $parameters;
+			$message += $parameters;
 		}
 
-		return json_encode($notification);
+		return json_encode($message);
+	}
+
+	/**
+	 * _checkNotification method
+	 *
+	 * @param array $notification
+	 * @return array $notification
+	 */
+	protected function _checkNotification($notification = false) 
+	{
+		if ($notification === false) {
+			return false;
+		}
+
+		if (!is_array($notification)) {
+			throw new \LogicException("Notification must be an array.");
+		}
+
+		if (empty($notification) || !isset($notification['title'])) {
+			throw new \LogicException("Notification's array must contain at least a key title.");
+		}
+
+		if (!isset($notification['icon'])) {
+			$notification['icon'] = 'myicon';
+		}
+
+		return $notification;
+	}
+
+	/**
+	 * _checkData method
+	 *
+	 * @param array $data
+	 * @return array $data
+	 */
+	public function _checkData($data = false) 
+	{
+		if ($data === false) {
+			return false;
+		}
+
+		if (!is_array($data)) {
+			throw new \LogicException("Data must ba an array.");
+		}
+
+		if (empty($data)) {
+			throw new \LogicException("Data's array can't be empty.");
+		}
+
+		// Convert all data into string
+		foreach ($data as $key => $value) {
+			$data[$key] = (string)$value;
+		}
+
+		return $data;
 	}
 
 	/**
