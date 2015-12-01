@@ -15,7 +15,6 @@ namespace CakeGcm\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
-use Cake\Core\Exception\Exception;
 use Cake\Network\Http\Client;
 use Cake\Utility\Hash;
 
@@ -61,24 +60,12 @@ class GcmComponent extends Component
 	protected $_response = null;
 
 	/**
-	 * Controller reference
-	 */
-	protected $Controller = null;
-
-	/**
-	 * A Component collection, used to get more components.
-	 *
-	 * @var ComponentCollection
-	 */
-	protected $Collection;
-
-	/**
 	 * Constructor
 	 *
 	 * @param ComponentRegistry $collection A ComponentRegistry
 	 * @param array $config Array of configuration settings
 	 */
-	public function __construct(ComponentRegistry $collection, array $config = [])
+	public function __construct(ComponentRegistry $registry, array $config = [])
 	{
 		$this->_errorMessages = [
 			'400' => __('Error 400. The request could not be parsed as JSON.'),
@@ -89,22 +76,12 @@ class GcmComponent extends Component
 	}
 
 	/**
-	 * Called before the Controller::beforeFilter().
-	 *
-	 * @param Controller $controller Controller with components to initialize
-	 * @return void
-	 */
-	public function initialize(Controller $controller) {
-		$this->Controller = $controller;
-	}
-
-	/**
 	 * send method
 	 *
 	 * @param string|array $ids
-	 * @param array $data
+	 * @param array $payload
 	 * @param array $parameters
-	 * @return void
+	 * @return boolean
 	 */
 	public function send($ids = false, array $payload = [], array $parameters = [])
 	{
@@ -143,12 +120,12 @@ class GcmComponent extends Component
 			throw new \ErrorException(__('Unable to check parameters.'));
 		}
 
-		$notification = $this->_buildMessage($ids, $payload, $parameters);
-		if ($notification === false) {
-			throw new \ErrorException(__('Unable to build the notification.'));
+		$message = $this->_buildMessage($ids, $payload, $parameters);
+		if ($message === false) {
+			throw new \ErrorException(__('Unable to build the message.'));
 		}
 
-		return $this->_executePush($notification);
+		return $this->_executePush($message);
 	}
 
 	/**
@@ -194,12 +171,12 @@ class GcmComponent extends Component
 	/**
 	 * _executePush method
 	 *
-	 * @param json $notification
-	 * @return bool
+	 * @param json $message
+	 * @return boolean
 	 */
-	protected function _executePush($notification = false)
+	protected function _executePush($message = false)
 	{
-		if ($notification === false) {
+		if ($message === false) {
 			return false;
 		}
 
@@ -208,7 +185,7 @@ class GcmComponent extends Component
 		}
 
 		$http = new Client();
-		$this->_response = $http->post($this->_config['api']['url'], $notification, [
+		$this->_response = $http->post($this->_config['api']['url'], $message, [
 			'type' => 'json',
 			'header' => [
 				'Authorization' => 'key=' . $this->config['api']['key'],
@@ -224,10 +201,10 @@ class GcmComponent extends Component
 	}
 
 	/**
-	 * _buildNotification method
+	 * _buildMessage method
 	 *
 	 * @param array $ids
-	 * @param array $data
+	 * @param array $payload
 	 * @param array $parameters
 	 * @return json
 	 */
