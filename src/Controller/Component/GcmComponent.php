@@ -67,6 +67,7 @@ class GcmComponent extends Component
 	 */
 	public function __construct(ComponentRegistry $registry, array $config = [])
 	{
+		parent::initialize($config);
 		$this->_errorMessages = [
 			'400' => __('Error 400. The request could not be parsed as JSON.'),
 			'401' => __('Error 401. Unable to authenticating the sender account.'),
