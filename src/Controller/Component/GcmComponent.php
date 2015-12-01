@@ -62,7 +62,6 @@ class GcmComponent extends Component
 	/**
 	 * Constructor
 	 *
-	 * @param ComponentRegistry $collection A ComponentRegistry
 	 * @param array $config Array of configuration settings
 	 */
 	public function __construct(ComponentRegistry $registry, array $config = [])
@@ -134,7 +133,7 @@ class GcmComponent extends Component
 	 * @param string|array $ids
 	 * @param array $notification
 	 * @param array $parameters
-	 * @return void
+	 * @return boolean
 	 */
 	public function sendNotification($ids = false, array $notification = [], array $parameters = []) 
 	{
@@ -147,7 +146,7 @@ class GcmComponent extends Component
 	 * @param string|array $ids
 	 * @param array $data
 	 * @param array $parameters
-	 * @return void
+	 * @return boolean
 	 */
 	public function sendData($ids = false, array $data = [], array $parameters = []) 
 	{
@@ -206,7 +205,7 @@ class GcmComponent extends Component
 	 * @param array $ids
 	 * @param array $payload
 	 * @param array $parameters
-	 * @return json
+	 * @return false|string
 	 */
 	protected function _buildMessage($ids = false, $payload = false, $parameters = false)
 	{
