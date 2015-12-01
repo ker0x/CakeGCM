@@ -93,10 +93,9 @@ class GcmComponent extends Component {
 	 * send method
 	 *
 	 * @param string|array $ids
-	 * @param array $data
+	 * @param array $payload
 	 * @param array $parameters
-	 * @param string $field
-	 * @return void
+	 * @return boolean
 	 */
 	public function send($ids = false, $payload = array(), $parameters = array()) {
 
@@ -149,7 +148,7 @@ class GcmComponent extends Component {
 	 * @param string|array $ids
 	 * @param array $notification
 	 * @param array $parameters
-	 * @return void
+	 * @return boolean
 	 */
 	public function sendNotification($ids = false, $notification = array(), $parameters = array()) {
 		return $this->send($ids, array('notification' => $notification), $parameters);
@@ -161,7 +160,7 @@ class GcmComponent extends Component {
 	 * @param string|array $ids
 	 * @param array $data
 	 * @param array $parameters
-	 * @return void
+	 * @return boolean
 	 */
 	public function sendData($ids = false, $data = array(), $parameters = array()) {
 		return $this->send($ids, array('data' => $data), $parameters);
@@ -170,7 +169,7 @@ class GcmComponent extends Component {
 	/**
 	 * response method
 	 *
-	 * @return void
+	 * @return string
 	 */
 	public function response() {
 		if (array_key_exists($this->_response->code, $this->_errorMessages)) {
@@ -211,13 +210,12 @@ class GcmComponent extends Component {
 	}
 
 	/**
-	 * _buildNotification method
+	 * _buildMessage method
 	 *
 	 * @param array $ids
-	 * @param array $data
+	 * @param array $payload
 	 * @param array $parameters
-	 * @param string $field
-	 * @return json
+	 * @return false|string
 	 */
 	protected function _buildMessage($ids = false, $payload = false, $parameters = false) {
 		if ($ids === false) {

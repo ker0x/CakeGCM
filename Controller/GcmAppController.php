@@ -8,7 +8,7 @@ class GcmAppController extends AppController {
  *
  * @var array
  */
-    public $helpers =  array(
+    public $helpers = array(
         'Html',
         'Form'
     );
