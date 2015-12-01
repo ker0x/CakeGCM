@@ -62,10 +62,7 @@ class GcmComponent extends Component
 	/**
 	 * Constructor
 	 *
-<<<<<<< HEAD
 	 * @param ComponentRegistry $registry A ComponentRegistry
-=======
->>>>>>> 415f4b3f05fcc2e2672e9a8abb03e7a90071024c
 	 * @param array $config Array of configuration settings
 	 */
 	public function __construct(ComponentRegistry $registry, array $config = [])
