@@ -62,7 +62,7 @@ class GcmComponent extends Component
 	/**
 	 * Constructor
 	 *
-	 * @param ComponentRegistry $collection A ComponentRegistry
+	 * @param ComponentRegistry $registry A ComponentRegistry
 	 * @param array $config Array of configuration settings
 	 */
 	public function __construct(ComponentRegistry $registry, array $config = [])
@@ -94,7 +94,7 @@ class GcmComponent extends Component
 		}
 
 		if (!is_array($payload)) {
-			throw new \LogicException(__('Data must be an array.'));
+			throw new \LogicException(__('Payload must be an array.'));
 		}
 
 		if (!is_array($parameters)) {
@@ -134,7 +134,7 @@ class GcmComponent extends Component
 	 * @param string|array $ids
 	 * @param array $notification
 	 * @param array $parameters
-	 * @return void
+	 * @return boolean
 	 */
 	public function sendNotification($ids = false, array $notification = [], array $parameters = []) 
 	{
@@ -147,7 +147,7 @@ class GcmComponent extends Component
 	 * @param string|array $ids
 	 * @param array $data
 	 * @param array $parameters
-	 * @return void
+	 * @return boolean
 	 */
 	public function sendData($ids = false, array $data = [], array $parameters = []) 
 	{
@@ -188,7 +188,7 @@ class GcmComponent extends Component
 		$this->_response = $http->post($this->_config['api']['url'], $message, [
 			'type' => 'json',
 			'header' => [
-				'Authorization' => 'key=' . $this->config['api']['key'],
+				'Authorization' => 'key=' . $this->_config['api']['key'],
 				'Content-Type' => 'application/json'
 			]
 		]);
@@ -206,7 +206,7 @@ class GcmComponent extends Component
 	 * @param array $ids
 	 * @param array $payload
 	 * @param array $parameters
-	 * @return json
+	 * @return false|string
 	 */
 	protected function _buildMessage($ids = false, $payload = false, $parameters = false)
 	{
@@ -231,7 +231,7 @@ class GcmComponent extends Component
 	 * _checkNotification method
 	 *
 	 * @param array $notification
-	 * @return array $notification
+	 * @return false|array $notification
 	 */
 	protected function _checkNotification($notification = false) 
 	{
@@ -258,7 +258,7 @@ class GcmComponent extends Component
 	 * _checkData method
 	 *
 	 * @param array $data
-	 * @return array $data
+	 * @return false|array $data
 	 */
 	public function _checkData($data = false) 
 	{
@@ -286,7 +286,7 @@ class GcmComponent extends Component
 	 * _checkParameters method
 	 *
 	 * @param array $parameters
-	 * @return array $parameters
+	 * @return false|array $parameters
 	 */
 	protected function _checkParameters($parameters = false)
 	{
