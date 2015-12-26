@@ -188,7 +188,7 @@ class GcmComponent extends Component
         $http = new Client();
         $this->_response = $http->post($this->config('api.url'), $message, [
             'type' => 'json',
-            'header' => [
+            'headers' => [
                 'Authorization' => 'key=' . $this->config('api.key'),
                 'Content-Type' => 'application/json'
             ]
