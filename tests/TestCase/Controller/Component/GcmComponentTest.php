@@ -31,7 +31,8 @@ class GcmComponentTest extends TestCase
     public function testSend()
     {
         $this->component->send();
-        $this->assertEquals('', $this->component->response());
+        $response = $this->component->response();
+        $this->assertEquals(1, $response['success']);
     }
 
     public function tearDown()
