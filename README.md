@@ -8,14 +8,15 @@ CakeGCM is a plugin for CakePHP to send downstream message to an Android or iOS 
 
 ## Requirements
 
-* CakePHP >= 3.0
+* CakePHP >= 3.*
+* PHP >= 5.4
 
 ## Installation
 Run : `composer require ker0x/cake_gcm:dev-master`
 Or add it in your `composer.json`:
 ``` php
 "require": {
-    "ker0x/cake_gcm": "dev-master"
+    "ker0x/cake_gcm": "dev-cake3"
 },
 ```
 
@@ -70,7 +71,7 @@ Send a notification to a device:
 ```php
 $this->Gcm->send('1', [
     'notification' => [
-        'title' => 'Hello World', 
+        'title' => 'Hello World',
         'body' => 'My awesome Hellow World!'
     ]
 ]);
@@ -78,7 +79,7 @@ $this->Gcm->send('1', [
 or
 ```php
 $this->Gcm->sendNotification('1', [
-    'title' => 'Hello World', 
+    'title' => 'Hello World',
     'body' => 'My awesome Hellow World!'
 ]);
 ```
@@ -89,7 +90,7 @@ $this->Gcm->send(
     ['1', '2', '3', '4'],
     [
         'notification' => [
-            'title' => 'Hello World', 
+            'title' => 'Hello World',
             'body' => 'My awesome Hellow World!'
         ]
     ]
@@ -100,7 +101,7 @@ or
 $this->Gcm->sendNotification(
     ['1', '2', '3', '4'],
     [
-        'title' => 'Hello World', 
+        'title' => 'Hello World',
         'body' => 'My awesome Hellow World!'
     ]
 );
@@ -149,7 +150,7 @@ $this->Gcm->send(
     ['1', '2', '3', '4'],
     [
         'notification' => [
-            'title' => 'Hello World', 
+            'title' => 'Hello World',
             'body' => 'My awesome Hellow World!'
         ],
         'data' => [
