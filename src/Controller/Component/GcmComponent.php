@@ -172,7 +172,7 @@ class GcmComponent extends Component
     /**
      * _executePush method
      *
-     * @param json $message
+     * @param string $message
      * @return boolean
      */
     protected function _executePush($message = false)
