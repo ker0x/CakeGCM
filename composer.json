@@ -22,8 +22,7 @@
         "source": "https://github.com/ker0x/CakeGCM"
     },
     "require": {
-        "composer/installers": "*",
-        "cakephp/cakephp": "~3.0"
+        "cakephp/cakephp": "~3.1"
     },
     "require-dev": {
         "phpunit/phpunit": "*",
