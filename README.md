@@ -12,7 +12,7 @@ CakeGCM is a plugin for CakePHP to send downstream message to an Android or iOS 
 * PHP >= 5.4
 
 ## Installation
-Run : `composer require ker0x/cake_gcm:dev-master`
+Run : `composer require ker0x/cake_gcm:dev-cake3`
 Or add it in your `composer.json`:
 ``` php
 "require": {

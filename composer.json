@@ -23,19 +23,21 @@
     },
     "require": {
         "composer/installers": "*",
-        "cakephp/cakephp": "3.*"
+        "cakephp/cakephp": "~3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.1.*"
+        "phpunit/phpunit": "*",
+        "cakephp/cakephp-codesniffer": "dev-master"
     },
     "autoload": {
         "psr-4": {
-            "ker0x\\CakeGcm\\": "src"
+            "CakeGcm\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ker0x\\CakeGcm\\Test\\": "tests"
+            "CakeGcm\\Test\\": "tests",
+            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
         }
     }
 }
