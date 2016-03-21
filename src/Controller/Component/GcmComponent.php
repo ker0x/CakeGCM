@@ -142,10 +142,6 @@ class GcmComponent extends Component
         }
 
         $parameters = $this->_checkParameters($parameters);
-        if (!$parameters) {
-            throw new Exception(__('Unable to check parameters.'));
-        }
-
         $message = $this->_buildMessage($ids, $payload, $parameters);
 
         return $this->_executePush($message);
