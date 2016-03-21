@@ -17,6 +17,7 @@ use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use Cake\Network\Http\Client;
 use Cake\Utility\Hash;
+use \Exception;
 
 /**
  * Gcm Component
@@ -107,12 +108,12 @@ class GcmComponent extends Component
      */
     public function send($ids = null, array $payload = [], array $parameters = [])
     {
-        if (!is_string($ids) || !is_array($ids) || empty($ids)) {
-            throw new Exception(__('Ids must be a string or an array with at least 1 token.'));
-        }
-
         if (is_string($ids)) {
             $ids = (array)$ids;
+        }
+
+        if (is_null($ids) || !is_array($ids) || empty($ids)) {
+            throw new Exception(__('Ids must be a string or an array with at least 1 token.'));
         }
 
         if (is_array($ids) && count($ids) > 1000) {

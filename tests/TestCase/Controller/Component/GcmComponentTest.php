@@ -6,12 +6,17 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\TestSuite\TestCase;
+use \Exception;
 use ker0x\CakeGcm\Controller\Component\GcmComponent;
 
 class GcmComponentTest extends TestCase
 {
     public $component = null;
+
     public $controller = null;
+
+    public $ids = [];
+
 
     public function setUp()
     {
@@ -21,18 +26,17 @@ class GcmComponentTest extends TestCase
         $response = new Response();
         $this->controller = $this->getMock(
             'Cake\Controller\Controller',
-            [],
+            null,
             [$request, $response]
         );
         $registry = new ComponentRegistry($this->controller);
         $this->component = new GcmComponent($registry);
     }
 
-    public function testSend()
+    public function testSendError()
     {
-        $this->component->send();
-        $response = $this->component->response();
-        $this->assertEquals(1, $response['success']);
+        $isSend = $this->component->send($this->ids);
+        $this->assertEquals(new Exception(), $isSend);
     }
 
     public function tearDown()
