@@ -23,7 +23,7 @@ Or add it in your `composer.json`:
 ### Enable plugin
 In `config/bootstrap.php` file add :
 ```php
-Plugin::load('CakeGcm', ['autoload' => true]);
+Plugin::load('CakeGcm');
 ```
 or uncomment :
 ```php
@@ -44,7 +44,7 @@ To get an API key, follow the instructions in this link: http://developer.androi
 
 Then, in an action of your Controller, add the following code:
 ```php
-if ($this->Gcm->send($ids, $data, $parameters)) {
+if ($this->Gcm->send($ids, $payload, $parameters)) {
     // do some stuff
 } else {
     // do other stuff

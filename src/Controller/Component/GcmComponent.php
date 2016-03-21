@@ -46,6 +46,26 @@ class GcmComponent extends Component
     ];
 
     /**
+     * List of parameters available to use in notification messages.
+     *
+     * @var array
+     */
+    protected $_allowedNotificationParameters = [
+        'title',
+        'body',
+        'icon',
+        'sound',
+        'badge',
+        'tag',
+        'color',
+        'click_action',
+        'body_loc_key',
+        'body_loc_args',
+        'title_loc_key',
+        'title_loc_args'
+    ];
+
+    /**
      * Error code and message.
      *
      * @var array
@@ -82,49 +102,51 @@ class GcmComponent extends Component
      * @param string|array $ids
      * @param array $payload
      * @param array $parameters
+     * @throws Exception
      * @return boolean
      */
-    public function send($ids = false, array $payload = [], array $parameters = [])
+    public function send($ids = null, array $payload = [], array $parameters = [])
     {
+        if (!is_string($ids) || !is_array($ids) || empty($ids)) {
+            throw new Exception(__('Ids must be a string or an array with at least 1 token.'));
+        }
+
         if (is_string($ids)) {
             $ids = (array)$ids;
         }
 
-        if ($ids === false || !is_array($ids) || empty($ids)) {
-            throw new \LogicException(__('Ids must be a string or an array.'));
+        if (is_array($ids) && count($ids) > 1000) {
+            throw new Exception(__('Ids must contain at least 1 and at most 1000 registration tokens.'));
         }
 
         if (!is_array($payload)) {
-            throw new \LogicException(__('Payload must be an array.'));
+            throw new Exception(__('Payload must be an array.'));
         }
 
         if (!is_array($parameters)) {
-            throw new \LogicException(__('Parameters must be an array.'));
+            throw new Exception(__('Parameters must be an array.'));
         }
 
         if (isset($payload['notification'])) {
             $payload['notification'] = $this->_checkNotification($payload['notification']);
             if (!$payload['notification']) {
-                throw new \LogicException(__("Unable to check notification."));
+                throw new Exception(__("Unable to check notification."));
             }
         }
 
         if (isset($payload['data'])) {
             $payload['data'] = $this->_checkData($payload['data']);
             if (!$payload['data']) {
-                throw new \LogicException(__("Unable to check data."));
+                throw new Exception(__("Unable to check data."));
             }
         }
 
         $parameters = $this->_checkParameters($parameters);
         if (!$parameters) {
-            throw new \ErrorException(__('Unable to check parameters.'));
+            throw new Exception(__('Unable to check parameters.'));
         }
 
         $message = $this->_buildMessage($ids, $payload, $parameters);
-        if ($message === false) {
-            throw new \ErrorException(__('Unable to build the message.'));
-        }
 
         return $this->_executePush($message);
     }
@@ -137,7 +159,7 @@ class GcmComponent extends Component
      * @param array $parameters
      * @return boolean
      */
-    public function sendNotification($ids = false, array $notification = [], array $parameters = [])
+    public function sendNotification($ids = null, array $notification = [], array $parameters = [])
     {
         return $this->send($ids, ['notification' => $notification], $parameters);
     }
@@ -150,7 +172,7 @@ class GcmComponent extends Component
      * @param array $parameters
      * @return boolean
      */
-    public function sendData($ids = false, array $data = [], array $parameters = [])
+    public function sendData($ids = null, array $data = [], array $parameters = [])
     {
         return $this->send($ids, ['data' => $data], $parameters);
     }
@@ -158,7 +180,7 @@ class GcmComponent extends Component
     /**
      * response method
      *
-     * @return void
+     * @return string
      */
     public function response()
     {
@@ -173,16 +195,13 @@ class GcmComponent extends Component
      * _executePush method
      *
      * @param string $message
+     * @throws Exception
      * @return boolean
      */
-    protected function _executePush($message = false)
+    protected function _executePush($message)
     {
-        if ($message === false) {
-            return false;
-        }
-
         if ($this->config('api.key') === null) {
-            throw new \ErrorException(__('No API key set. Push not triggered'));
+            throw new Exception(__('No API key set. Push not triggered'));
         }
 
         $http = new Client();
@@ -204,18 +223,14 @@ class GcmComponent extends Component
     /**
      * _buildMessage method
      *
-     * @param array $ids
+     * @param array|string $ids
      * @param array $payload
      * @param array $parameters
-     * @return false|string
+     * @return string
      */
-    protected function _buildMessage($ids = false, $payload = false, $parameters = false)
+    protected function _buildMessage($ids, $payload, $parameters)
     {
-        if ($ids === false) {
-            return false;
-        }
-
-        $message = ['registration_ids' => $ids];
+        $message = (count($ids) > 1) ? ['registration_ids' => $ids] : ['to' => current($ids)];
 
         if (!empty($payload)) {
             $message += $payload;
@@ -232,24 +247,27 @@ class GcmComponent extends Component
      * _checkNotification method
      *
      * @param array $notification
-     * @return false|array $notification
+     * @throws Exception
+     * @return array $notification
      */
-    protected function _checkNotification($notification = false)
+    protected function _checkNotification(array $notification = [])
     {
-        if ($notification === false) {
-            return false;
-        }
-
         if (!is_array($notification)) {
-            throw new \LogicException("Notification must be an array.");
+            throw new Exception('Notification must be an array.');
         }
 
         if (empty($notification) || !isset($notification['title'])) {
-            throw new \LogicException("Notification's array must contain at least a key title.");
+            throw new Exception('Notification\'s array must contain at least a key title.');
         }
 
         if (!isset($notification['icon'])) {
             $notification['icon'] = 'myicon';
+        }
+
+        foreach ($notification as $key => $value) {
+            if (!in_array($key, $this->_allowedNotificationParameters)) {
+                throw new Exception("The key {$key} is not allowed in notifications.");
+            }
         }
 
         return $notification;
@@ -259,20 +277,17 @@ class GcmComponent extends Component
      * _checkData method
      *
      * @param array $data
-     * @return false|array $data
+     * @throws Exception
+     * @return array $data
      */
-    public function _checkData($data = false)
+    public function _checkData(array $data = [])
     {
-        if ($data === false) {
-            return false;
-        }
-
         if (!is_array($data)) {
-            throw new \LogicException("Data must ba an array.");
+            throw new Exception('Data must ba an array.');
         }
 
         if (empty($data)) {
-            throw new \LogicException("Data's array can't be empty.");
+            throw new Exception('Data\'s array can\'t be empty.');
         }
 
         // Convert all data into string
@@ -287,14 +302,10 @@ class GcmComponent extends Component
      * _checkParameters method
      *
      * @param array $parameters
-     * @return false|array $parameters
+     * @return array $parameters
      */
-    protected function _checkParameters($parameters = false)
+    protected function _checkParameters(array $parameters = [])
     {
-        if ($parameters === false) {
-            return false;
-        }
-
         $parameters = Hash::merge($this->config('parameters'), $parameters);
         $parameters = array_filter($parameters);
 
