@@ -37,7 +37,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "ker0x\\CakeGcm\\Test\\": "tests",
+            "ker0x\\CakeGcm\\Test\\": "tests"
         }
     }
 }
