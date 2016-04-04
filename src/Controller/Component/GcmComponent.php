@@ -86,13 +86,13 @@ class GcmComponent extends Component
     }
 
     /**
-     * send method
+     * Send a payload to one or more devices
      *
      * @param string|array $ids
      * @param array $payload
      * @param array $parameters
      * @throws Exception
-     * @return boolean
+     * @return bool
      */
     public function send($ids = null, array $payload = [], array $parameters = [])
     {
@@ -118,12 +118,12 @@ class GcmComponent extends Component
     }
 
     /**
-     * sendNotification method
+     * Shortcut to send notification
      *
      * @param string|array $ids
      * @param array $notification
      * @param array $parameters
-     * @return boolean
+     * @return bool
      */
     public function sendNotification($ids = null, array $notification = [], array $parameters = [])
     {
@@ -131,7 +131,7 @@ class GcmComponent extends Component
     }
 
     /**
-     * sendData method
+     * Shortcut to send datas
      *
      * @param string|array $ids
      * @param array $data
@@ -144,7 +144,7 @@ class GcmComponent extends Component
     }
 
     /**
-     * response method
+     * Return the response of the push
      *
      * @return string
      */
@@ -158,11 +158,11 @@ class GcmComponent extends Component
     }
 
     /**
-     * _executePush method
+     * Send the message throught a POST request to the GCM servers
      *
      * @param string $message
      * @throws Exception
-     * @return boolean
+     * @return bool
      */
     protected function _executePush($message)
     {
@@ -187,7 +187,7 @@ class GcmComponent extends Component
     }
 
     /**
-     * _buildMessage method
+     * Build the message from the ids, payload and parameters
      *
      * @param array|string $ids
      * @param array $payload
@@ -210,7 +210,7 @@ class GcmComponent extends Component
     }
 
     /**
-     * _checkIds method
+     * Check if the ids are correct
      *
      * @param null|string|array $ids
      * @throws Exception
@@ -234,7 +234,7 @@ class GcmComponent extends Component
     }
 
     /**
-     * _checkNotification method
+     * Check if the notification array is correctly build
      *
      * @param array $notification
      * @throws Exception
@@ -264,7 +264,7 @@ class GcmComponent extends Component
     }
 
     /**
-     * _checkData method
+     * Check if the data array is correctly build
      *
      * @param array $data
      * @throws Exception
@@ -289,7 +289,7 @@ class GcmComponent extends Component
     }
 
     /**
-     * _checkParameters method
+     * Check the parameters for the message
      *
      * @param array $parameters
      * @return array $parameters

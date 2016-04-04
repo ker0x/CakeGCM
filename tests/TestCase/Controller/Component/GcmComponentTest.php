@@ -1,13 +1,13 @@
 <?php
 namespace ker0x\CakeGcm\Test\TestCase\Controller\Component;
 
-use Cake\Controller\Controller;
 use Cake\Controller\ComponentRegistry;
+use Cake\Controller\Controller;
 use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\TestSuite\TestCase;
-use \Exception;
 use ker0x\CakeGcm\Controller\Component\GcmComponent;
+use \Exception;
 
 class GcmComponentTest extends TestCase
 {
