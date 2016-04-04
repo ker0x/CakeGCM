@@ -1,0 +1,36 @@
+checks:
+    php:
+        code_rating: true
+        duplication: true
+
+filter:
+    excluded_paths:
+        - tests/*
+
+coding_style:
+    php:
+        braces:
+            classes_functions:
+                class: new-line
+                function: new-line
+                closure: end-of-line
+            if:
+                opening: end-of-line
+            for:
+                opening: end-of-line
+            while:
+                opening: end-of-line
+            do_while:
+                opening: end-of-line
+            switch:
+                opening: end-of-line
+            try:
+                opening: end-of-line
+        upper_lower_casing:
+            keywords:
+                general: lower
+            constants:
+                true_false_null: lower
+
+tools:
+    php_analyzer: true
