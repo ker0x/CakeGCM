@@ -1,5 +1,5 @@
 <?php
-namespace CakeGcm\Controller\Component;
+namespace ker0x\CakeGcm\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
