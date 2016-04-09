@@ -14,8 +14,7 @@ class GcmComponentTest extends IntegrationTestCase
 
     public $controller = null;
 
-    public $ids = [];
-
+    public $ids = null;
 
     public function setUp()
     {
@@ -29,13 +28,24 @@ class GcmComponentTest extends IntegrationTestCase
             [$request, $response]
         );
         $registry = new ComponentRegistry($this->controller);
-        $this->component = new GcmComponent($registry);
+        $this->component = new GcmComponent($registry, [
+            'api' => [
+                'key' => getenv('GCM_API_KEY')
+            ]
+        ]);
     }
 
-    public function testIdsError()
+    public function testIds()
     {
-        $this->component->send($this->ids);
-        $this->expectExceptionMessage('Ids must be a string or an array with at least 1 token.');
+        $this->ids = getenv('TOKEN');
+
+        $this->component->send($this->ids, [
+            'notification' => [
+                'title' => 'Hello World',
+                'body' => 'My awesome Hello World!'
+            ]
+        ]);
+        $this->assertResponseCode(200);
     }
 
     public function tearDown()
