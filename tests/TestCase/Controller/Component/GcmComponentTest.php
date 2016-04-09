@@ -5,11 +5,10 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Network\Request;
 use Cake\Network\Response;
-use Cake\TestSuite\TestCase;
+use Cake\TestSuite\IntegrationTestCase;
 use ker0x\CakeGcm\Controller\Component\GcmComponent;
-use \Exception;
 
-class GcmComponentTest extends TestCase
+class GcmComponentTest extends IntegrationTestCase
 {
     public $component = null;
 
@@ -33,10 +32,10 @@ class GcmComponentTest extends TestCase
         $this->component = new GcmComponent($registry);
     }
 
-    public function testSendError()
+    public function testIdsError()
     {
-        $isSend = $this->component->send($this->ids);
-        $this->assertEquals(new Exception(), $isSend);
+        $this->component->send($this->ids);
+        $this->expectExceptionMessage('Ids must be a string or an array with at least 1 token.');
     }
 
     public function tearDown()

@@ -136,7 +136,7 @@ class GcmComponent extends Component
      * @param string|array $ids
      * @param array $data
      * @param array $parameters
-     * @return boolean
+     * @return bool
      */
     public function sendData($ids = null, array $data = [], array $parameters = [])
     {
@@ -292,6 +292,7 @@ class GcmComponent extends Component
      * Check the parameters for the message
      *
      * @param array $parameters
+     * @throws Exception
      * @return array $parameters
      */
     protected function _checkParameters(array $parameters = [])
