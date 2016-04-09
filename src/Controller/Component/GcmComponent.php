@@ -86,11 +86,11 @@ class GcmComponent extends Component
     }
 
     /**
-     * Send a payload to one or more devices
+     * Send a downstream message to one or more devices
      *
-     * @param string|array $ids
-     * @param array $payload
-     * @param array $parameters
+     * @param string|array $ids Devices'ids
+     * @param array $payload The notification and/or some datas
+     * @param array $parameters Parameters for the GCM request
      * @throws Exception
      * @return bool
      */
@@ -120,9 +120,9 @@ class GcmComponent extends Component
     /**
      * Shortcut to send notification
      *
-     * @param string|array $ids
-     * @param array $notification
-     * @param array $parameters
+     * @param string|array $ids Devices'ids
+     * @param array $notification The notification
+     * @param array $parameters Parameters for the GCM request
      * @return bool
      */
     public function sendNotification($ids = null, array $notification = [], array $parameters = [])
@@ -133,9 +133,9 @@ class GcmComponent extends Component
     /**
      * Shortcut to send datas
      *
-     * @param string|array $ids
-     * @param array $data
-     * @param array $parameters
+     * @param string|array $ids Devices'ids
+     * @param array $data Some datas
+     * @param array $parameters Parameters for the GCM request
      * @return bool
      */
     public function sendData($ids = null, array $data = [], array $parameters = [])
@@ -160,7 +160,7 @@ class GcmComponent extends Component
     /**
      * Send the message throught a POST request to the GCM servers
      *
-     * @param string $message
+     * @param string $message The message to send
      * @throws Exception
      * @return bool
      */
@@ -189,9 +189,9 @@ class GcmComponent extends Component
     /**
      * Build the message from the ids, payload and parameters
      *
-     * @param array|string $ids
-     * @param array $payload
-     * @param array $parameters
+     * @param array|string $ids Devices'ids
+     * @param array $payload The notification and/or some datas
+     * @param array $parameters Parameters for the GCM request
      * @return string
      */
     protected function _buildMessage($ids, $payload, $parameters)
@@ -212,7 +212,7 @@ class GcmComponent extends Component
     /**
      * Check if the ids are correct
      *
-     * @param null|string|array $ids
+     * @param mixed $ids Devices'ids
      * @throws Exception
      * @return array
      */
@@ -236,7 +236,7 @@ class GcmComponent extends Component
     /**
      * Check if the notification array is correctly build
      *
-     * @param array $notification
+     * @param array $notification The notification
      * @throws Exception
      * @return array $notification
      */
@@ -266,7 +266,7 @@ class GcmComponent extends Component
     /**
      * Check if the data array is correctly build
      *
-     * @param array $data
+     * @param array $data Some datas
      * @throws Exception
      * @return array $data
      */
@@ -291,7 +291,7 @@ class GcmComponent extends Component
     /**
      * Check the parameters for the message
      *
-     * @param array $parameters
+     * @param array $parameters Parameters for the GCM request
      * @throws Exception
      * @return array $parameters
      */

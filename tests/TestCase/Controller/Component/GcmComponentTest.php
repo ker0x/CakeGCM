@@ -35,7 +35,7 @@ class GcmComponentTest extends IntegrationTestCase
         ]);
     }
 
-    public function testIds()
+    public function testSend()
     {
         $this->ids = getenv('TOKEN');
 
