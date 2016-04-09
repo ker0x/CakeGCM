@@ -1,11 +1,12 @@
+[![Build Status](https://img.shields.io/travis/ker0x/CakeGCM.svg?style=flat-square)](https://travis-ci.org/ker0x/CakeGCM)
+[![Coverage Status](https://img.shields.io/scrutinizer/g/filp/whoops.svg?style=flat-square)](https://scrutinizer-ci.com/g/ker0x/CakeGCM/?branch=cake3)
+[![Total Downloads](https://img.shields.io/packagist/dt/ker0x/cake_gcm.svg?style=flat-square)](https://packagist.org/packages/ker0x/cake_gcm)
+[![Latest Stable Version](https://img.shields.io/packagist/v/ker0x/cake_gcm.svg?style=flat-square)](https://packagist.org/packages/ker0x/cake_gcm)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://packagist.org/packages/ker0x/cake_gcm)
+
 # CakeGCM
 
 CakeGCM is a plugin for CakePHP to send downstream message to an Android or iOS device through Google Cloud Messaging
-
-[![Travis](https://img.shields.io/travis/rust-lang/rust.svg?style=flat-square)](https://travis-ci.org/ker0x/CakeGCM)
-[![Scrutinizer](https://img.shields.io/scrutinizer/g/filp/whoops.svg?style=flat-square)](https://scrutinizer-ci.com/g/ker0x/CakeGCM/?branch=cake3)
-[![Packagist](https://img.shields.io/packagist/dt/doctrine/orm.svg?style=flat-square)](https://packagist.org/packages/ker0x/cake_gcm)
-[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://packagist.org/packages/ker0x/cake_gcm)
 
 ## Requirements
 
@@ -24,7 +25,7 @@ Or add it in your `composer.json`:
 ### Enable plugin
 In `config/bootstrap.php` file add :
 ```php
-Plugin::load('CakeGcm');
+Plugin::load('ker0x/CakeGcm');
 ```
 or uncomment :
 ```php
@@ -33,7 +34,7 @@ Plugin::loadAll();
 ### Usage
 In `src/Controller/AppController.php` file, add :
 ```php
-$this->loadComponent('CakeGcm.Gcm', [
+$this->loadComponent('ker0x/CakeGcm.Gcm', [
     'api' => [
         'key' => '*****'
     ]
