@@ -39,13 +39,13 @@ class GcmComponentTest extends IntegrationTestCase
     {
         $this->ids = getenv('TOKEN');
 
-        $this->component->send($this->ids, [
+        $send = $this->component->send($this->ids, [
             'notification' => [
                 'title' => 'Hello World',
                 'body' => 'My awesome Hello World!'
             ]
         ]);
-        $this->assertResponseCode(200);
+        $this->assertTrue($send);
     }
 
     public function tearDown()
