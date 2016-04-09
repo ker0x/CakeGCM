@@ -2,14 +2,15 @@
 
 CakeGCM is a plugin for CakePHP to send downstream message to an Android or iOS device through Google Cloud Messaging
 
-[![Scrutinizer](https://img.shields.io/scrutinizer/g/ker0x/CakeGCM.svg?style=flat-square)](https://scrutinizer-ci.com/g/ker0x/CakeGCM/?branch=cake3)
-[![Total Downloads](https://img.shields.io/packagist/dt/ker0x/cake_gcm.svg?style=flat-square)](https://packagist.org/packages/ker0x/cake_gcm)
+[![Travis](https://img.shields.io/travis/rust-lang/rust.svg?style=flat-square)](https://travis-ci.org/ker0x/CakeGCM)
+[![Scrutinizer](https://img.shields.io/scrutinizer/g/filp/whoops.svg?style=flat-square)](https://scrutinizer-ci.com/g/ker0x/CakeGCM/?branch=cake3)
+[![Packagist](https://img.shields.io/packagist/dt/doctrine/orm.svg?style=flat-square)](https://packagist.org/packages/ker0x/cake_gcm)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://packagist.org/packages/ker0x/cake_gcm)
 
 ## Requirements
 
 * CakePHP >= 3.*
-* PHP >= 5.4
+* PHP >= 5.5
 
 ## Installation
 Run : `composer require ker0x/cake_gcm:dev-cake3`
