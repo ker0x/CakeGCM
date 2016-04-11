@@ -18,7 +18,7 @@ Run : `composer require ker0x/cake_gcm:dev-cake3`
 Or add it in your `composer.json`:
 ``` php
 "require": {
-    "ker0x/cake_gcm": "dev-cake3"
+    "ker0x/cake_gcm": "~2.0"
 },
 ```
 
