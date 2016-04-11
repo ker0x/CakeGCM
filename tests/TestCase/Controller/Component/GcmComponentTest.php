@@ -14,8 +14,6 @@ class GcmComponentTest extends IntegrationTestCase
 
     public $controller = null;
 
-    public $ids = null;
-
     public function setUp()
     {
         parent::setUp();
@@ -31,23 +29,22 @@ class GcmComponentTest extends IntegrationTestCase
         $this->component = new GcmComponent($registry, [
             'api' => [
                 'key' => getenv('GCM_API_KEY')
-            ],
-            'http' => [
-                'ssl_verify_peer' => false
             ]
         ]);
     }
 
     public function testSend()
     {
-        $this->ids = getenv('TOKEN');
-
-        $send = $this->component->send($this->ids, [
+        $ids = getenv('TOKEN');
+        $payload = [
             'notification' => [
                 'title' => 'Hello World',
                 'body' => 'My awesome Hello World!'
             ]
-        ]);
+        ];
+        $parameters = ['dry_run' => true];
+
+        $send = $this->component->send($ids, $payload, $parameters);
         $this->assertTrue($send);
     }
 

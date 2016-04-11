@@ -31,8 +31,7 @@ class GcmComponent extends Component
             'dry_run' => false,
             'time_to_live' => 0,
             'restricted_package_name' => null
-        ],
-        'http' => []
+        ]
     ];
 
     /**
@@ -171,17 +170,14 @@ class GcmComponent extends Component
             throw new Exception(__('No API key set. Push not triggered'));
         }
 
-        $options = Hash::merge($this->config('http'), [
+        $http = new Client();
+        $this->_response = $http->post($this->config('api.url'), $message, [
             'type' => 'json',
             'headers' => [
                 'Authorization' => 'key=' . $this->config('api.key'),
                 'Content-Type' => 'application/json'
             ]
         ]);
-        $options = array_filter($options);
-
-        $http = new Client();
-        $this->_response = $http->post($this->config('api.url'), $message, $options);
 
         if ($this->_response->code === '200') {
             return true;
