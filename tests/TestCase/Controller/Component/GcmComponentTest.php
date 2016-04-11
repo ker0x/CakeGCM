@@ -31,6 +31,9 @@ class GcmComponentTest extends IntegrationTestCase
         $this->component = new GcmComponent($registry, [
             'api' => [
                 'key' => getenv('GCM_API_KEY')
+            ],
+            'http' => [
+                'ssl_verify_peer' => false
             ]
         ]);
     }
