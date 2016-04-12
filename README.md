@@ -42,7 +42,7 @@ $this->loadComponent('ker0x/CakeGcm.Gcm', [
 ```
 in your Controller's initialize() method. Replace `*****` by your API Key.
 
-To get an API key, follow the instructions in this link: http://developer.android.com/google/gcm/gs.html#access-key
+To get an API key, go to https://console.cloud.google.com/start
 
 Then, in an action of your Controller, add the following code:
 ```php
@@ -109,44 +109,26 @@ $this->Gcm->sendNotification(
 );
 ```
 
-Send a notification with lots of data
-```php
-$this->Gcm->send(
-    ['1', '2', '3', '4'],
-    [
-        'data-1' => 'Lorem ipsum',
-        'data-2' => 1234,
-        'data-3' => true
-    ]
-);
-```
-
 Send datas to a device:
 ```php
-$this->Gcm->send(
-    ['1', '2', '3', '4'],
-    [
-        'data' => [
-            'data-1' => 'Lorem ipsum',
-            'data-2' => '1234',
-            'data-3' => 'true'
-        ]
+$this->Gcm->send('1', [
+    'data' => [
+        'data-1' => 'Lorem ipsum',
+        'data-2' => '1234',
+        'data-3' => 'true'
     ]
-);
+]);
 ```
 or
 ```php
-$this->Gcm->sendData(
-    ['1', '2', '3', '4'],
-    [
-        'data-1' => 'Lorem ipsum',
-        'data-2' => 1234,
-        'data-3' => true
-    ]
-);
+$this->Gcm->sendData('1', [
+    'data-1' => 'Lorem ipsum',
+    'data-2' => '1234',
+    'data-3' => 'true'
+]);
 ```
 
-Send a notification and some datas to a device at the same time:
+Send a notification and some datas to multiple devices at the same time:
 ```php
 $this->Gcm->send(
     ['1', '2', '3', '4'],

@@ -13,6 +13,7 @@ Contents:
 
    Introduction <introduction>
    Installation <installation>
+   Examples <examples>
 
 
 Indices and tables
