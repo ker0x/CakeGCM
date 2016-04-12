@@ -87,6 +87,7 @@ Send notifications and datas
 Send a notification and some datas to multiple devices at the same time:
 
 .. code:: php
+
     $this->Gcm->send(
         ['1', '2', '3', '4'],
         [
@@ -109,7 +110,7 @@ Send a notification with extra parameters:
 
 .. code:: php
 
-    $this->Gcm->sendNotification(
+    $this->Gcm->send(
         ['1', '2', '3', '4'],
         [
             'notification' => [

@@ -148,7 +148,7 @@ $this->Gcm->send(
 
 Send a notification with extra parameters:
 ```php
-$this->Gcm->sendNotification(
+$this->Gcm->send(
     ['1', '2', '3', '4'],
     [
         'notification' => [

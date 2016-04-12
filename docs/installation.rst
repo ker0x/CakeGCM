@@ -21,7 +21,7 @@ You need to enable the plugin in your ``config/bootstrap.php`` file:
 
 .. code:: php
 
-    <?php Plugin::load('ker0x/CakeGCM'); ?>
+    Plugin::load('ker0x/CakeGCM');
 
 If you are already using ``Plugin::loadAll();``, then this is not necessary.
 
@@ -40,7 +40,7 @@ In ``src/Controller/AppController.php``, add :
 
 in your Controller's initialize() method. Replace ``****`` by your API Key.
 
-To get an API key, go to `https://console.cloud.google.com/start <https://console.cloud.google.com/start>`.
+To get an API key, go to `<https://console.cloud.google.com/start>`.
 
 Then, in an action of one of your Controller, add the following code:
 
