@@ -314,7 +314,7 @@ class GcmComponent extends Component
 
     /**
      * Return options for the HTTP request
-     * 
+     *
      * @throws Exception
      * @return array $options
      */
