@@ -327,7 +327,7 @@ class GcmComponent extends Component
         $options = Hash::merge($this->config('http'), [
             'type' => 'json',
             'headers' => [
-                'Authorization' => 'key='.$this->config('api.key'),
+                'Authorization' => 'key=' . $this->config('api.key'),
                 'Content-Type' => 'application/json'
             ]
         ]);
