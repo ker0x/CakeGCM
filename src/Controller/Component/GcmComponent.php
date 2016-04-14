@@ -295,7 +295,6 @@ class GcmComponent extends Component
         }
 
         $parameters = Hash::merge($this->config('parameters'), $parameters);
-        $parameters = array_filter($parameters);
 
         if (isset($parameters['time_to_live']) && !is_int($parameters['time_to_live'])) {
             $parameters['time_to_live'] = (int)$parameters['time_to_live'];
@@ -331,7 +330,6 @@ class GcmComponent extends Component
                 'Content-Type' => 'application/json'
             ]
         ]);
-        $options = array_filter($options);
 
         return $options;
     }

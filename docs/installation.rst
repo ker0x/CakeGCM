@@ -21,7 +21,7 @@ You need to enable the plugin in your ``config/bootstrap.php`` file:
 
 .. code:: php
 
-    Plugin::load('ker0x/CakeGCM');
+    Plugin::load('ker0x/CakeGcm');
 
 If you are already using ``Plugin::loadAll();``, then this is not necessary.
 
