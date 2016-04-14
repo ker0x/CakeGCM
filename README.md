@@ -1,7 +1,8 @@
 [![Build Status](https://img.shields.io/travis/ker0x/CakeGCM.svg?style=flat-square)](https://travis-ci.org/ker0x/CakeGCM)
-[![Coverage Status](https://img.shields.io/scrutinizer/g/filp/whoops.svg?style=flat-square)](https://scrutinizer-ci.com/g/ker0x/CakeGCM/?branch=cake3)
+[![Code Quality](https://img.shields.io/scrutinizer/g/filp/whoops.svg?style=flat-square)](https://scrutinizer-ci.com/g/ker0x/CakeGCM/?branch=cake3)
 [![Total Downloads](https://img.shields.io/packagist/dt/ker0x/cake_gcm.svg?style=flat-square)](https://packagist.org/packages/ker0x/cake_gcm)
 [![Latest Stable Version](https://img.shields.io/packagist/v/ker0x/cake_gcm.svg?style=flat-square)](https://packagist.org/packages/ker0x/cake_gcm)
+[![Documentation Status](https://readthedocs.org/projects/cakegcm/badge/?version=latest&style=flat-square)](http://cakegcm.readthedocs.org/en/latest/?badge=latest)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://packagist.org/packages/ker0x/cake_gcm)
 
 # CakeGCM
@@ -13,158 +14,10 @@ CakeGCM is a plugin for CakePHP to send downstream message to an Android or iOS 
 * CakePHP >= 3.*
 * PHP >= 5.5
 
-## Installation
-Run : `composer require ker0x/cake_gcm:dev-cake3`
-Or add it in your `composer.json`:
-``` php
-"require": {
-    "ker0x/cake_gcm": "~2.0"
-},
-```
+## Documentation
 
-### Enable plugin
-In `config/bootstrap.php` file add :
-```php
-Plugin::load('ker0x/CakeGcm');
-```
-or uncomment :
-```php
-Plugin::loadAll();
-```
-### Usage
-In `src/Controller/AppController.php` file, add :
-```php
-$this->loadComponent('ker0x/CakeGcm.Gcm', [
-    'api' => [
-        'key' => '*****'
-    ]
-]);
-```
-in your Controller's initialize() method. Replace `*****` by your API Key.
+The documentation is available [here](http://cakegcm.readthedocs.org/en/latest/)
 
-To get an API key, go to https://console.cloud.google.com/start
-
-Then, in an action of your Controller, add the following code:
-```php
-if ($this->Gcm->send($ids, $payload, $parameters)) {
-    // do some stuff
-} else {
-    // do other stuff
-}
-```
-where:
-
- * `$ids` is a string or an array of device ids. (required)
- * `$payload` is an array containing the notification and/or some datas that will be passed to a device. (optional)
- * `$paramaters` is an array of parameters for the notification. (optional)
-
-You could have the response of the request by using the function `response()`:
-```php
-$response = $this->Gcm->response();
-```
-## Examples
-
-Send an empty notification to a device:
-```php
-$this->Gcm->send('1');
-```
-
-Send a notification to a device:
-```php
-$this->Gcm->send('1', [
-    'notification' => [
-        'title' => 'Hello World',
-        'body' => 'My awesome Hellow World!'
-    ]
-]);
-```
-or
-```php
-$this->Gcm->sendNotification('1', [
-    'title' => 'Hello World',
-    'body' => 'My awesome Hellow World!'
-]);
-```
-
-Send a notification to multiple devices:
-```php
-$this->Gcm->send(
-    ['1', '2', '3', '4'],
-    [
-        'notification' => [
-            'title' => 'Hello World',
-            'body' => 'My awesome Hellow World!'
-        ]
-    ]
-);
-```
-or
-```php
-$this->Gcm->sendNotification(
-    ['1', '2', '3', '4'],
-    [
-        'title' => 'Hello World',
-        'body' => 'My awesome Hellow World!'
-    ]
-);
-```
-
-Send datas to a device:
-```php
-$this->Gcm->send('1', [
-    'data' => [
-        'data-1' => 'Lorem ipsum',
-        'data-2' => '1234',
-        'data-3' => 'true'
-    ]
-]);
-```
-or
-```php
-$this->Gcm->sendData('1', [
-    'data-1' => 'Lorem ipsum',
-    'data-2' => '1234',
-    'data-3' => 'true'
-]);
-```
-
-Send a notification and some datas to multiple devices at the same time:
-```php
-$this->Gcm->send(
-    ['1', '2', '3', '4'],
-    [
-        'notification' => [
-            'title' => 'Hello World',
-            'body' => 'My awesome Hellow World!'
-        ],
-        'data' => [
-            'data-1' => 'Lorem ipsum',
-            'data-2' => 1234,
-            'data-3' => true
-        ]
-    ]
-);
-```
-
-Send a notification with extra parameters:
-```php
-$this->Gcm->send(
-    ['1', '2', '3', '4'],
-    [
-        'notification' => [
-            'title' => 'Hello World',
-            'body' => 'My awesome Hello World!'
-        ]
-    ],
-    [
-        'delay_while_idle' => true,
-        'dry_run' => false,
-        'time_to_live' => 86400,
-        'collapse_key' => 'Gcm',
-        'restricted_package_name' => 'my_awesome_package'
-    ]
-);
-```
 ## License
 
 The MIT License (MIT)

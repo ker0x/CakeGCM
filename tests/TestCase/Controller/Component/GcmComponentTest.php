@@ -29,23 +29,50 @@ class GcmComponentTest extends IntegrationTestCase
         $this->component = new GcmComponent($registry, [
             'api' => [
                 'key' => getenv('GCM_API_KEY')
+            ],
+            'http' => [
+                'ssl_verify_peer' => false,
+                'ssl_verify_peer_name' => false,
+                'ssl_verify_host' => false
             ]
         ]);
     }
 
-    public function testSend()
+    public function testSendNotification()
     {
         $ids = getenv('TOKEN');
-        $payload = [
-            'notification' => [
+
+        $result = $this->component->sendNotification(
+            $ids,
+            [
                 'title' => 'Hello World',
                 'body' => 'My awesome Hello World!'
+            ],
+            [
+                'dry_run' => true
             ]
-        ];
-        $parameters = ['dry_run' => true];
+        );
 
-        $send = $this->component->send($ids, $payload, $parameters);
-        $this->assertTrue($send);
+        $this->assertTrue($result);
+    }
+
+    public function testSendData()
+    {
+        $ids = getenv('TOKEN');
+
+        $result = $this->component->sendData(
+            $ids,
+            [
+                'data-1' => 'Lorem ipsum',
+                'data-2' => 1234,
+                'data-3' => true
+            ],
+            [
+                'dry_run' => true
+            ]
+        );
+
+        $this->assertTrue($result);
     }
 
     public function tearDown()
