@@ -94,7 +94,7 @@ class GcmComponentTest extends IntegrationTestCase
             ],
             [
                 'delay_while_idle' => 'true',
-                'time_tol_live' => '60',
+                'time_to_live' => '60',
                 'dry_run' => 'true'
             ]
         );
