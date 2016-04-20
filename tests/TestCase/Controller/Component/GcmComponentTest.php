@@ -40,10 +40,10 @@ class GcmComponentTest extends IntegrationTestCase
 
     public function testSendNotification()
     {
-        $ids = getenv('TOKEN');
+        $tokens = getenv('TOKEN');
 
         $result = $this->component->sendNotification(
-            $ids,
+            $tokens,
             [
                 'title' => 'Hello World',
                 'body' => 'My awesome Hello World!'
@@ -58,10 +58,10 @@ class GcmComponentTest extends IntegrationTestCase
 
     public function testSendData()
     {
-        $ids = getenv('TOKEN');
+        $tokens = getenv('TOKEN');
 
         $result = $this->component->sendData(
-            $ids,
+            $tokens,
             [
                 'data-1' => 'Lorem ipsum',
                 'data-2' => 1234,
@@ -73,6 +73,36 @@ class GcmComponentTest extends IntegrationTestCase
         );
 
         $this->assertTrue($result);
+    }
+
+    public function testResponse()
+    {
+        $tokens = getenv('TOKEN');
+
+        $this->component->send(
+            $tokens,
+            [
+                'notification' => [
+                    'title' => 'Hello World',
+                    'body' => 'My awesome Hello World!'
+                ],
+                'data' => [
+                    'data-1' => 'Lorem ipsum',
+                    'data-2' => 1234,
+                    'data-3' => true
+                ]
+            ],
+            [
+                'delay_while_idle' => 'true',
+                'time_tol_live' => '60',
+                'dry_run' => 'true'
+            ]
+        );
+
+        $response = $this->component->response();
+
+        $this->assertEquals(1, $response['success']);
+        $this->assertEquals(0, $response['failure']);
     }
 
     public function tearDown()
