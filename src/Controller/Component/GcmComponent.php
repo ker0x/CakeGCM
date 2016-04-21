@@ -89,7 +89,7 @@ class GcmComponent extends Component
     /**
      * Send a downstream message to one or more devices
      *
-     * @param string|array $ids Devices'ids
+     * @param mixed $ids Devices'ids
      * @param array $payload The notification and/or some datas
      * @param array $parameters Parameters for the GCM request
      * @throws Exception
@@ -121,7 +121,7 @@ class GcmComponent extends Component
     /**
      * Shortcut to send notification
      *
-     * @param string|array $ids Devices'ids
+     * @param mixed $ids Devices'ids
      * @param array $notification The notification
      * @param array $parameters Parameters for the GCM request
      * @return bool
@@ -134,7 +134,7 @@ class GcmComponent extends Component
     /**
      * Shortcut to send datas
      *
-     * @param string|array $ids Devices'ids
+     * @param mixed $ids Devices'ids
      * @param array $data Some datas
      * @param array $parameters Parameters for the GCM request
      * @return bool
@@ -172,11 +172,7 @@ class GcmComponent extends Component
         $http = new Client();
         $this->_response = $http->post($this->config('api.url'), $message, $options);
 
-        if ($this->_response->code === '200') {
-            return true;
-        }
-
-        return false;
+        return ($this->_response->code === '200') ? true : false;
     }
 
     /**
