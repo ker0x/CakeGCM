@@ -1,8 +1,0 @@
-filter:
-    paths: [Controller/*]
-    excluded_paths: [Test/*]
-tools:
-    php_analyzer: true
-checks:
-    php:
-        code_rating: true
