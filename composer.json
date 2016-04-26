@@ -1,0 +1,43 @@
+{
+    "name": "ker0x/cake-gcm",
+    "type": "cakephp-plugin",
+    "description": "CakeGCM is a plugin for CakePHP to send notification to an Android device through Google Cloud Messaging",
+    "homepage": "https://github.com/ker0x/CakeGCM",
+    "keywords": [
+        "cakephp",
+        "google cloud messaging",
+        "gcm",
+        "cake3"
+    ],
+    "license": "MIT",
+    "version": "2.0.0",
+    "authors": [
+        {
+            "name": "Romain Monteil",
+            "email": "monteil.romain@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/ker0x/CakeGCM/issues",
+        "source": "https://github.com/ker0x/CakeGCM"
+    },
+    "require": {
+        "php": ">=5.5"
+    },
+    "require-dev": {
+        "cakephp/cakephp": "~3.0",
+        "phpunit/phpunit": "*",
+        "cakephp/cakephp-codesniffer": "dev-master",
+        "satooshi/php-coveralls": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "ker0x\\CakeGcm\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ker0x\\CakeGcm\\Test\\": "tests"
+        }
+    }
+}
