@@ -6,7 +6,8 @@ use Cake\Network\Http\Client;
 use Cake\Utility\Hash;
 use \Exception;
 
-class Gcm {
+class Gcm
+{
 
     use InstanceConfigTrait;
 
