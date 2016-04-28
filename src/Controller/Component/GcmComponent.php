@@ -14,7 +14,7 @@ class GcmComponent extends Component
 {
 
     /**
-     * Response of the request
+     * Gcm property
      *
      * @var object
      */
@@ -37,7 +37,6 @@ class GcmComponent extends Component
      * @param mixed $ids Devices'ids
      * @param array $payload The notification and/or some datas
      * @param array $parameters Parameters for the GCM request
-     * @throws Exception
      * @return bool
      */
     public function send($ids = null, array $payload = [], array $parameters = [])

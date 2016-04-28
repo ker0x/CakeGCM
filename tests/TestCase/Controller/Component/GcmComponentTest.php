@@ -14,10 +14,11 @@ class GcmComponentTest extends IntegrationTestCase
 
     public $controller = null;
 
+    public $tokens = null;
+
     public function setUp()
     {
         parent::setUp();
-         // Setup our component and fake test controller
         $request = new Request();
         $response = new Response();
         $this->controller = $this->getMock(
@@ -36,14 +37,13 @@ class GcmComponentTest extends IntegrationTestCase
                 'ssl_verify_host' => false
             ]
         ]);
+        $this->tokens = getenv('TOKEN');
     }
 
     public function testSendNotification()
     {
-        $tokens = getenv('TOKEN');
-
         $result = $this->component->sendNotification(
-            $tokens,
+            $this->tokens,
             [
                 'title' => 'Hello World',
                 'body' => 'My awesome Hello World!'
@@ -58,10 +58,8 @@ class GcmComponentTest extends IntegrationTestCase
 
     public function testSendData()
     {
-        $tokens = getenv('TOKEN');
-
         $result = $this->component->sendData(
-            $tokens,
+            $this->tokens,
             [
                 'data-1' => 'Lorem ipsum',
                 'data-2' => 1234,
@@ -77,10 +75,8 @@ class GcmComponentTest extends IntegrationTestCase
 
     public function testResponse()
     {
-        $tokens = getenv('TOKEN');
-
         $this->component->send(
-            $tokens,
+            $this->tokens,
             [
                 'notification' => [
                     'title' => 'Hello World',
@@ -108,7 +104,6 @@ class GcmComponentTest extends IntegrationTestCase
     public function tearDown()
     {
         parent::tearDown();
-        // Clean up after we're done
-        unset($this->component, $this->controller);
+        unset($this->component, $this->controller, $this->tokens);
     }
 }

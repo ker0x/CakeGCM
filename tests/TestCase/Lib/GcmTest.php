@@ -12,8 +12,6 @@ class GcmTest extends IntegrationTestCase
 
     public function setUp()
     {
-        parent::setUp();
-        // Setup our component and fake test controller
         $this->gcm = new Gcm([
             'api' => [
                 'key' => getenv('GCM_API_KEY')
@@ -90,8 +88,6 @@ class GcmTest extends IntegrationTestCase
 
     public function tearDown()
     {
-        parent::tearDown();
-        // Clean up after we're done
         unset($this->gcm, $this->tokens);
     }
 }
