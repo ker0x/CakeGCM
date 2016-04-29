@@ -2,8 +2,7 @@
 namespace ker0x\CakeGcm\Controller\Component;
 
 use Cake\Controller\Component;
-use Cake\Controller\ComponentRegistry;
-use ker0x\CakeGcm\Lib\Gcm;
+use ker0x\CakeGcm\Webservice\Gcm;
 use \Exception;
 
 /**
@@ -21,13 +20,13 @@ class GcmComponent extends Component
     protected $_gcm = null;
 
     /**
-     * Constructor
+     * Initialize config data and properties.
      *
-     * @param ComponentRegistry $registry A ComponentRegistry
      * @param array $config Array of configuration settings
      */
-    public function __construct(ComponentRegistry $registry, array $config = [])
+    public function initialize(array $config= [])
     {
+        parent::initialize($config);
         $this->_gcm = new Gcm($config);
     }
 

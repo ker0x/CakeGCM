@@ -1,8 +1,8 @@
 <?php
-namespace ker0x\CakeGcm\Test\TestCase\Lib;
+namespace ker0x\CakeGcm\Test\TestCase\Webservice;
 
 use Cake\TestSuite\IntegrationTestCase;
-use ker0x\CakeGcm\Lib\Gcm;
+use ker0x\CakeGcm\Webservice\Gcm;
 
 class GcmTest extends IntegrationTestCase
 {

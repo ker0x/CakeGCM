@@ -1,5 +1,5 @@
 <?php
-namespace ker0x\CakeGCM\Lib;
+namespace ker0x\CakeGCM\Webservice;
 
 use Cake\Core\InstanceConfigTrait;
 use Cake\Network\Http\Client;
@@ -74,7 +74,7 @@ class Gcm
     public function __construct(array $config = [])
     {
         $this->config($config);
-        
+
         $this->_errorMessages = [
             '400' => __('Error 400. The request could not be parsed as JSON.'),
             '401' => __('Error 401. Unable to authenticating the sender account.'),
