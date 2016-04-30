@@ -8,13 +8,13 @@ Send an empty notification to a device:
 
 .. code:: php
 
-    $this->Gcm->send('1');
+    $Gcm->send('1');
 
 Send a notification to a device:
 
 .. code:: php
 
-    $this->Gcm->send('1', [
+    $Gcm->send('1', [
         'notification' => [
             'title' => 'Hello World',
             'body' => 'My awesome Hellow World!'
@@ -25,7 +25,7 @@ or with the shortcut
 
 .. code:: php
 
-    $this->Gcm->sendNotification('1', [
+    $Gcm->sendNotification('1', [
         'title' => 'Hello World',
         'body' => 'My awesome Hellow World!'
     ]);
@@ -34,7 +34,7 @@ Send a notification to multiples devices:
 
 .. code:: php
 
-    $this->Gcm->send(
+    $Gcm->send(
         ['1', '2', '3', '4'],
         [
             'notification' => [
@@ -48,7 +48,7 @@ or
 
 .. code:: php
 
-    $this->Gcm->sendNotification(
+    $Gcm->sendNotification(
         ['1', '2', '3', '4'],
         [
             'title' => 'Hello World',
@@ -63,7 +63,7 @@ Send datas to a device
 
 .. code:: php
 
-    $this->Gcm->send('1', [
+    $Gcm->send('1', [
         'data' => [
             'data-1' => 'Lorem ipsum',
             'data-2' => 1234,
@@ -75,7 +75,7 @@ or with the shortcut
 
 .. code:: php
 
-    $this->Gcm->sendData('1', [
+    $Gcm->sendData('1', [
         'data-1' => 'Lorem ipsum',
         'data-2' => 1234,
         'data-3' => true
@@ -88,7 +88,7 @@ Send a notification and some datas to multiple devices at the same time:
 
 .. code:: php
 
-    $this->Gcm->send(
+    $Gcm->send(
         ['1', '2', '3', '4'],
         [
             'notification' => [
@@ -110,7 +110,7 @@ Send a notification with extra parameters:
 
 .. code:: php
 
-    $this->Gcm->send(
+    $Gcm->send(
         ['1', '2', '3', '4'],
         [
             'notification' => [
