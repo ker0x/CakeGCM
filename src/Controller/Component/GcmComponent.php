@@ -24,7 +24,7 @@ class GcmComponent extends Component
      *
      * @param array $config Array of configuration settings
      */
-    public function initialize(array $config= [])
+    public function initialize(array $config = [])
     {
         parent::initialize($config);
         $this->_gcm = new Gcm($config);
