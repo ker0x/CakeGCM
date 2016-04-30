@@ -2,7 +2,7 @@ Installation
 ============
 
 Using `Composer <http://getcomposer.org/>`__
---------------------------------------------
+----
 
 To install this plugin, run ``composer require ker0x/cake_gcm`` or add this snippet in your project's ``composer.json``.
 
@@ -15,7 +15,7 @@ To install this plugin, run ``composer require ker0x/cake_gcm`` or add this snip
     }
 
 Enable plugin
--------------
+----
 
 You need to enable the plugin in your ``config/bootstrap.php`` file:
 
@@ -25,8 +25,42 @@ You need to enable the plugin in your ``config/bootstrap.php`` file:
 
 If you are already using ``Plugin::loadAll();``, then this is not necessary.
 
+Get an API key
+----
+
+Go to https://console.developers.google.com/apis/library and enable Google Clous Messaging API
+
+Use the Gcm class
+----
+
+First, you have to include it :
+
+.. code:: php
+
+    use ker0x\CakeGcm\Webservice\Gcm;
+
+Then, in your code:
+
+.. code:: php
+
+    $Gcm = new Gcm(['api' => ['key' => '*****']]);
+    $Gcm->send($ids, $payload, $parameters);
+
+where:
+
+    - ``*****`` is your API key (required)
+    - ``$ids`` is a string or an array of device ids. (required)
+    - ``$payload`` is an array containing the notification and/or some datas that will be passed to a device. (optional)
+    - ``$paramaters`` is an array of parameters for the notification. (optional)
+
+You could have the response of the request by using the function ``response()``:
+
+.. code:: php
+
+    $response = $Gcm->response();
+
 Use the component
------------------
+----
 
 In ``src/Controller/AppController.php``, add :
 
@@ -38,9 +72,7 @@ In ``src/Controller/AppController.php``, add :
         ]
     ]);
 
-in your Controller's initialize() method. Replace ``****`` by your API Key.
-
-To get an API key, go to `<https://console.cloud.google.com/start>`.
+in your Controller's initialize() method.
 
 Then, in an action of one of your Controller, add the following code:
 
@@ -52,15 +84,4 @@ Then, in an action of one of your Controller, add the following code:
         // do other stuff
     }
 
-where:
-
- - ``$ids`` is a string or an array of device ids. (required)
- - ``$payload`` is an array containing the notification and/or some datas that will be passed to a device. (optional)
- - ``$paramaters`` is an array of parameters for the notification. (optional)
-
-You could have the response of the request by using the function ``response()``:
-
-.. code:: php
-
     $response = $this->Gcm->response();
-
