@@ -10,7 +10,7 @@ To install this plugin, run ``composer require ker0x/cake_gcm`` or add this snip
 
     {
         "require": {
-            "ker0x/cake_gcm": "~2.0"
+            "ker0x/cake-gcm": "~2.0"
         }
     }
 
