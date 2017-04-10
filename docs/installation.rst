@@ -4,7 +4,7 @@ Installation
 Using `Composer <http://getcomposer.org/>`__
 ----
 
-To install this plugin, run ``composer require ker0x/cake_gcm`` or add this snippet in your project's ``composer.json``.
+To install this plugin, run ``composer require ker0x/cake-gcm`` or add this snippet in your project's ``composer.json``.
 
 .. code:: json
 
