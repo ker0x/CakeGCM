@@ -6,13 +6,16 @@ use ker0x\CakeGcm\Webservice\Gcm;
 
 class GcmTest extends IntegrationTestCase
 {
+    /**
+     * @var \ker0x\CakeGcm\Webservice\Gcm;
+     */
     public $gcm = null;
 
     public $tokens = null;
 
     public function setUp()
     {
-        $this->gcm = new Gcm([
+        $config = [
             'api' => [
                 'key' => getenv('GCM_API_KEY')
             ],
@@ -21,7 +24,17 @@ class GcmTest extends IntegrationTestCase
                 'ssl_verify_peer_name' => false,
                 'ssl_verify_host' => false
             ]
-        ]);
+        ];
+        $response = json_decode(file_get_contents(__DIR__ . '/../../Mocks/response.json'), true);
+
+        $this->gcm = $this->getMockBuilder(Gcm::class)
+            ->setConstructorArgs([$config])
+            ->getMock();
+
+        $this->gcm->method('response')->willReturn($response);
+        $this->gcm->method('sendNotification')->willReturn(true);
+        $this->gcm->method('sendData')->willReturn(true);
+
         $this->tokens = getenv('TOKEN');
     }
 

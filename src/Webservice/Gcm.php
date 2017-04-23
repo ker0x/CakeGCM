@@ -150,8 +150,9 @@ class Gcm
      */
     public function response()
     {
-        if (array_key_exists($this->_response->getStatusCode(), $this->_errorMessages)) {
-            return $this->_errorMessages[$this->_response->body()];
+        $statusCode = (string)$this->_response->getStatusCode();
+        if (array_key_exists($statusCode, $this->_errorMessages)) {
+            return $this->_errorMessages[$statusCode];
         }
 
         return $this->_response->body('json_decode');

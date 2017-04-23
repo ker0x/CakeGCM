@@ -21,12 +21,14 @@ class GcmComponentTest extends IntegrationTestCase
         parent::setUp();
         $request = new Request();
         $response = new Response();
-        $this->controller = $this->getMockBuilder('Cake\Controller\Controller')
+
+        $this->controller = $this->getMockBuilder(Controller::class)
             ->setConstructorArgs([$request, $response])
             ->setMethods(null)
             ->getMock();
+
         $registry = new ComponentRegistry($this->controller);
-        $this->component = new GcmComponent($registry, [
+        $config = [
             'api' => [
                 'key' => getenv('GCM_API_KEY')
             ],
@@ -35,7 +37,18 @@ class GcmComponentTest extends IntegrationTestCase
                 'ssl_verify_peer_name' => false,
                 'ssl_verify_host' => false
             ]
-        ]);
+        ];
+        $response = json_decode(file_get_contents(__DIR__ . '/../../../Mocks/response.json'), true);
+
+        $this->component = $this->getMockBuilder(GcmComponent::class)
+            ->setConstructorArgs([$registry, $config])
+            ->getMock();
+
+        $this->component->method('response')->willReturn($response);
+        $this->component->method('sendNotification')->willReturn(true);
+        $this->component->method('sendData')->willReturn(true);
+        $this->component->method('send')->willReturn(true);
+
         $this->tokens = getenv('TOKEN');
     }
 
