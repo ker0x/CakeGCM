@@ -3,7 +3,8 @@
 namespace ker0x\CakeGCM\Webservice;
 
 use Cake\Core\InstanceConfigTrait;
-use Cake\Network\Http\Client;
+use Cake\Http\Client;
+use Cake\Http\Client\Message;
 use Cake\Utility\Hash;
 use \Exception;
 
@@ -63,7 +64,7 @@ class Gcm
     /**
      * Response of the request
      *
-     * @var object
+     * @var \Cake\Http\Client\Response
      */
     protected $_response = null;
 
@@ -149,11 +150,11 @@ class Gcm
      */
     public function response()
     {
-        if (array_key_exists($this->_response->code, $this->_errorMessages)) {
-            return $this->_errorMessages[$this->_response->code];
+        if (array_key_exists($this->_response->getStatusCode(), $this->_errorMessages)) {
+            return $this->_errorMessages[$this->_response->body()];
         }
 
-        return json_decode($this->_response->body, true);
+        return $this->_response->body('json_decode');
     }
 
     /**
@@ -170,7 +171,7 @@ class Gcm
         $http = new Client();
         $this->_response = $http->post($this->getConfig('api.url'), $message, $options);
 
-        return ($this->_response->code === '200') ? true : false;
+        return ($this->_response->getStatusCode() === Message::STATUS_OK) ? true : false;
     }
 
     /**
