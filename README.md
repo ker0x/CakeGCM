@@ -1,4 +1,5 @@
 [![Build Status](https://img.shields.io/travis/ker0x/CakeGCM.svg?style=flat-square)](https://travis-ci.org/ker0x/CakeGCM)
+[![Coverage](https://img.shields.io/coveralls/ker0x/CakeGCM/master.svg?style=flat-square)](https://coveralls.io/github/ker0x/CakeGCM)
 [![Code Quality](https://img.shields.io/scrutinizer/g/filp/whoops.svg?style=flat-square)](https://scrutinizer-ci.com/g/ker0x/CakeGCM/)
 [![Total Downloads](https://img.shields.io/packagist/dt/ker0x/cake_gcm.svg?style=flat-square)](https://packagist.org/packages/ker0x/cake_gcm)
 [![Latest Stable Version](https://img.shields.io/packagist/v/ker0x/cake_gcm.svg?style=flat-square)](https://packagist.org/packages/ker0x/cake_gcm)
