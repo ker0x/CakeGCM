@@ -6,7 +6,7 @@ use Cake\Controller\Controller;
 use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\TestSuite\IntegrationTestCase;
-use ker0x\CakeGcm\Controller\Component\GcmComponent;
+use ker0x\CakeGcm\Test\TestCase\GcmComponentStub;
 
 class GcmComponentTest extends IntegrationTestCase
 {
@@ -28,28 +28,18 @@ class GcmComponentTest extends IntegrationTestCase
             ->getMock();
 
         $registry = new ComponentRegistry($this->controller);
-        $config = [
+        $this->component = new GcmComponentStub($registry, [
             'api' => [
-                'key' => getenv('GCM_API_KEY')
+                'key' => '1234567890'
             ],
             'http' => [
                 'ssl_verify_peer' => false,
                 'ssl_verify_peer_name' => false,
                 'ssl_verify_host' => false
             ]
-        ];
-        $response = json_decode(file_get_contents(__DIR__ . '/../../../Mocks/response.json'), true);
+        ]);
 
-        $this->component = $this->getMockBuilder(GcmComponent::class)
-            ->setConstructorArgs([$registry, $config])
-            ->getMock();
-
-        $this->component->method('response')->willReturn($response);
-        $this->component->method('sendNotification')->willReturn(true);
-        $this->component->method('sendData')->willReturn(true);
-        $this->component->method('send')->willReturn(true);
-
-        $this->tokens = getenv('TOKEN');
+        $this->tokens = 'token';
     }
 
     public function testSendNotification()

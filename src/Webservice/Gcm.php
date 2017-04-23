@@ -1,12 +1,11 @@
 <?php
 
-namespace ker0x\CakeGCM\Webservice;
+namespace ker0x\CakeGcm\Webservice;
 
 use Cake\Core\InstanceConfigTrait;
 use Cake\Http\Client;
 use Cake\Http\Client\Message;
 use Cake\Utility\Hash;
-use \Exception;
 
 class Gcm
 {
@@ -91,16 +90,12 @@ class Gcm
      * @param mixed $ids Devices'ids
      * @param array $payload The notification and/or some datas
      * @param array $parameters Parameters for the GCM request
-     * @throws Exception
+     * @throws \InvalidArgumentException
      * @return bool
      */
-    public function send($ids = null, array $payload = [], array $parameters = [])
+    public function send($ids, array $payload = [], array $parameters = [])
     {
         $ids = $this->_checkIds($ids);
-
-        if (!is_array($payload)) {
-            throw new Exception(__('Payload must be an array.'));
-        }
 
         if (isset($payload['notification'])) {
             $payload['notification'] = $this->_checkNotification($payload['notification']);
@@ -162,7 +157,7 @@ class Gcm
      * Send the message throught a POST request to the GCM servers
      *
      * @param string $message The message to send
-     * @throws Exception
+     * @throws \InvalidArgumentException
      * @return bool
      */
     protected function _executePush($message)
@@ -202,21 +197,21 @@ class Gcm
      * Check if the ids are correct
      *
      * @param mixed $ids Devices'ids
-     * @throws Exception
+     * @throws \InvalidArgumentException
      * @return array
      */
     protected function _checkIds($ids)
     {
         if (is_string($ids)) {
-            $ids = (array)$ids;
+            $ids = [$ids];
         }
 
         if (is_null($ids) || !is_array($ids) || empty($ids)) {
-            throw new Exception(__('Ids must be a string or an array with at least 1 token.'));
+            throw new \InvalidArgumentException(__('Ids must be a string or an array with at least 1 token.'));
         }
 
         if (is_array($ids) && count($ids) > 1000) {
-            throw new Exception(__('Ids must contain at least 1 and at most 1000 registration tokens.'));
+            throw new \InvalidArgumentException(__('Ids must contain at least 1 and at most 1000 registration tokens.'));
         }
 
         return $ids;
@@ -226,17 +221,13 @@ class Gcm
      * Check if the notification array is correctly build
      *
      * @param array $notification The notification
-     * @throws Exception
+     * @throws \InvalidArgumentException
      * @return array $notification
      */
     protected function _checkNotification(array $notification = [])
     {
-        if (!is_array($notification)) {
-            throw new Exception('Notification must be an array.');
-        }
-
         if (empty($notification) || !isset($notification['title'])) {
-            throw new Exception('Notification\'s array must contain at least a key title.');
+            throw new \InvalidArgumentException("Notification's array must contain at least a key title.");
         }
 
         if (!isset($notification['icon'])) {
@@ -245,7 +236,7 @@ class Gcm
 
         foreach ($notification as $key => $value) {
             if (!in_array($key, $this->_allowedNotificationParameters)) {
-                throw new Exception("The key {$key} is not allowed in notifications.");
+                throw new \InvalidArgumentException("The key {$key} is not allowed in notifications.");
             }
         }
 
@@ -256,17 +247,13 @@ class Gcm
      * Check if the data array is correctly build
      *
      * @param array $data Some datas
-     * @throws Exception
+     * @throws \InvalidArgumentException
      * @return array $data
      */
-    protected function _checkData(array $data = [])
+    protected function _checkData(array $data)
     {
-        if (!is_array($data)) {
-            throw new Exception('Data must ba an array.');
-        }
-
         if (empty($data)) {
-            throw new Exception('Data\'s array can\'t be empty.');
+            throw new \InvalidArgumentException("Data's array can't be empty.");
         }
 
         // Convert all data into string
@@ -286,10 +273,6 @@ class Gcm
      */
     protected function _checkParameters(array $parameters = [])
     {
-        if (!is_array($parameters)) {
-            throw new Exception(__('Parameters must be an array.'));
-        }
-
         $parameters = Hash::merge($this->getConfig('parameters'), $parameters);
 
         if (isset($parameters['time_to_live']) && !is_int($parameters['time_to_live'])) {
@@ -310,13 +293,13 @@ class Gcm
     /**
      * Return options for the HTTP request
      *
-     * @throws Exception
+     * @throws \Exception
      * @return array $options
      */
     protected function _getHttpOptions()
     {
         if ($this->getConfig('api.key') === null) {
-            throw new Exception(__('No API key set. Push not triggered'));
+            throw new \Exception(__('No API key set. Push not triggered'));
         }
 
         $options = Hash::merge($this->getConfig('http'), [
