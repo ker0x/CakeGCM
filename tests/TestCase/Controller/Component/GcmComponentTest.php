@@ -6,7 +6,7 @@ use Cake\Controller\Controller;
 use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\TestSuite\IntegrationTestCase;
-use ker0x\CakeGcm\Controller\Component\GcmComponent;
+use ker0x\CakeGcm\Test\TestCase\GcmComponentStub;
 
 class GcmComponentTest extends IntegrationTestCase
 {
@@ -21,15 +21,16 @@ class GcmComponentTest extends IntegrationTestCase
         parent::setUp();
         $request = new Request();
         $response = new Response();
-        $this->controller = $this->getMock(
-            'Cake\Controller\Controller',
-            null,
-            [$request, $response]
-        );
+
+        $this->controller = $this->getMockBuilder(Controller::class)
+            ->setConstructorArgs([$request, $response])
+            ->setMethods(null)
+            ->getMock();
+
         $registry = new ComponentRegistry($this->controller);
-        $this->component = new GcmComponent($registry, [
+        $this->component = new GcmComponentStub($registry, [
             'api' => [
-                'key' => getenv('GCM_API_KEY')
+                'key' => '1234567890'
             ],
             'http' => [
                 'ssl_verify_peer' => false,
@@ -37,7 +38,8 @@ class GcmComponentTest extends IntegrationTestCase
                 'ssl_verify_host' => false
             ]
         ]);
-        $this->tokens = getenv('TOKEN');
+
+        $this->tokens = 'token';
     }
 
     public function testSendNotification()

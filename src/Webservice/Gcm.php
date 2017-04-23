@@ -1,10 +1,11 @@
 <?php
-namespace ker0x\CakeGCM\Webservice;
+
+namespace ker0x\CakeGcm\Webservice;
 
 use Cake\Core\InstanceConfigTrait;
-use Cake\Network\Http\Client;
+use Cake\Http\Client;
+use Cake\Http\Client\Message;
 use Cake\Utility\Hash;
-use \Exception;
 
 class Gcm
 {
@@ -19,7 +20,7 @@ class Gcm
     protected $_defaultConfig = [
         'api' => [
             'key' => null,
-            'url' => 'https://gcm-http.googleapis.com/gcm/send'
+            'url' => 'https://gcm-http.googleapis.com/gcm/send',
         ],
         'parameters' => [
             'collapse_key' => null,
@@ -27,9 +28,9 @@ class Gcm
             'delay_while_idle' => false,
             'dry_run' => false,
             'time_to_live' => 0,
-            'restricted_package_name' => null
+            'restricted_package_name' => null,
         ],
-        'http' => []
+        'http' => [],
     ];
 
     /**
@@ -49,7 +50,7 @@ class Gcm
         'body_loc_key',
         'body_loc_args',
         'title_loc_key',
-        'title_loc_args'
+        'title_loc_args',
     ];
 
     /**
@@ -62,7 +63,7 @@ class Gcm
     /**
      * Response of the request
      *
-     * @var object
+     * @var \Cake\Http\Client\Response
      */
     protected $_response = null;
 
@@ -73,13 +74,13 @@ class Gcm
      */
     public function __construct(array $config = [])
     {
-        $this->config($config);
+        $this->setConfig($config);
 
         $this->_errorMessages = [
             '400' => __('Error 400. The request could not be parsed as JSON.'),
             '401' => __('Error 401. Unable to authenticating the sender account.'),
             '500' => __('Error 500. Internal Server Error.'),
-            '503' => __('Error 503. Service Unavailable.')
+            '503' => __('Error 503. Service Unavailable.'),
         ];
     }
 
@@ -89,16 +90,12 @@ class Gcm
      * @param mixed $ids Devices'ids
      * @param array $payload The notification and/or some datas
      * @param array $parameters Parameters for the GCM request
-     * @throws Exception
+     * @throws \InvalidArgumentException
      * @return bool
      */
-    public function send($ids = null, array $payload = [], array $parameters = [])
+    public function send($ids, array $payload = [], array $parameters = [])
     {
         $ids = $this->_checkIds($ids);
-
-        if (!is_array($payload)) {
-            throw new Exception(__('Payload must be an array.'));
-        }
 
         if (isset($payload['notification'])) {
             $payload['notification'] = $this->_checkNotification($payload['notification']);
@@ -148,18 +145,19 @@ class Gcm
      */
     public function response()
     {
-        if (array_key_exists($this->_response->code, $this->_errorMessages)) {
-            return $this->_errorMessages[$this->_response->code];
+        $statusCode = (string)$this->_response->getStatusCode();
+        if (array_key_exists($statusCode, $this->_errorMessages)) {
+            return $this->_errorMessages[$statusCode];
         }
 
-        return json_decode($this->_response->body, true);
+        return $this->_response->body('json_decode');
     }
 
     /**
      * Send the message throught a POST request to the GCM servers
      *
      * @param string $message The message to send
-     * @throws Exception
+     * @throws \InvalidArgumentException
      * @return bool
      */
     protected function _executePush($message)
@@ -167,9 +165,9 @@ class Gcm
         $options = $this->_getHttpOptions();
 
         $http = new Client();
-        $this->_response = $http->post($this->config('api.url'), $message, $options);
+        $this->_response = $http->post($this->getConfig('api.url'), $message, $options);
 
-        return ($this->_response->code === '200') ? true : false;
+        return ($this->_response->getStatusCode() === Message::STATUS_OK) ? true : false;
     }
 
     /**
@@ -199,21 +197,21 @@ class Gcm
      * Check if the ids are correct
      *
      * @param mixed $ids Devices'ids
-     * @throws Exception
+     * @throws \InvalidArgumentException
      * @return array
      */
     protected function _checkIds($ids)
     {
         if (is_string($ids)) {
-            $ids = (array)$ids;
+            $ids = [$ids];
         }
 
         if (is_null($ids) || !is_array($ids) || empty($ids)) {
-            throw new Exception(__('Ids must be a string or an array with at least 1 token.'));
+            throw new \InvalidArgumentException(__('Ids must be a string or an array with at least 1 token.'));
         }
 
         if (is_array($ids) && count($ids) > 1000) {
-            throw new Exception(__('Ids must contain at least 1 and at most 1000 registration tokens.'));
+            throw new \InvalidArgumentException(__('Ids must contain at least 1 and at most 1000 registration tokens.'));
         }
 
         return $ids;
@@ -223,17 +221,13 @@ class Gcm
      * Check if the notification array is correctly build
      *
      * @param array $notification The notification
-     * @throws Exception
+     * @throws \InvalidArgumentException
      * @return array $notification
      */
     protected function _checkNotification(array $notification = [])
     {
-        if (!is_array($notification)) {
-            throw new Exception('Notification must be an array.');
-        }
-
         if (empty($notification) || !isset($notification['title'])) {
-            throw new Exception('Notification\'s array must contain at least a key title.');
+            throw new \InvalidArgumentException("Notification's array must contain at least a key title.");
         }
 
         if (!isset($notification['icon'])) {
@@ -242,7 +236,7 @@ class Gcm
 
         foreach ($notification as $key => $value) {
             if (!in_array($key, $this->_allowedNotificationParameters)) {
-                throw new Exception("The key {$key} is not allowed in notifications.");
+                throw new \InvalidArgumentException("The key {$key} is not allowed in notifications.");
             }
         }
 
@@ -253,17 +247,13 @@ class Gcm
      * Check if the data array is correctly build
      *
      * @param array $data Some datas
-     * @throws Exception
+     * @throws \InvalidArgumentException
      * @return array $data
      */
-    protected function _checkData(array $data = [])
+    protected function _checkData(array $data)
     {
-        if (!is_array($data)) {
-            throw new Exception('Data must ba an array.');
-        }
-
         if (empty($data)) {
-            throw new Exception('Data\'s array can\'t be empty.');
+            throw new \InvalidArgumentException("Data's array can't be empty.");
         }
 
         // Convert all data into string
@@ -283,11 +273,7 @@ class Gcm
      */
     protected function _checkParameters(array $parameters = [])
     {
-        if (!is_array($parameters)) {
-            throw new Exception(__('Parameters must be an array.'));
-        }
-
-        $parameters = Hash::merge($this->config('parameters'), $parameters);
+        $parameters = Hash::merge($this->getConfig('parameters'), $parameters);
 
         if (isset($parameters['time_to_live']) && !is_int($parameters['time_to_live'])) {
             $parameters['time_to_live'] = (int)$parameters['time_to_live'];
@@ -307,21 +293,21 @@ class Gcm
     /**
      * Return options for the HTTP request
      *
-     * @throws Exception
+     * @throws \Exception
      * @return array $options
      */
     protected function _getHttpOptions()
     {
-        if ($this->config('api.key') === null) {
-            throw new Exception(__('No API key set. Push not triggered'));
+        if ($this->getConfig('api.key') === null) {
+            throw new \Exception(__('No API key set. Push not triggered'));
         }
 
-        $options = Hash::merge($this->config('http'), [
+        $options = Hash::merge($this->getConfig('http'), [
             'type' => 'json',
             'headers' => [
-                'Authorization' => 'key=' . $this->config('api.key'),
-                'Content-Type' => 'application/json'
-            ]
+                'Authorization' => 'key=' . $this->getConfig('api.key'),
+                'Content-Type' => 'application/json',
+            ],
         ]);
 
         return $options;

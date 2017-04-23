@@ -1,4 +1,5 @@
 <?php
+
 namespace ker0x\CakeGcm\Controller\Component;
 
 use Cake\Controller\Component;
