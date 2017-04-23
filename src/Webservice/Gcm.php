@@ -1,4 +1,5 @@
 <?php
+
 namespace ker0x\CakeGCM\Webservice;
 
 use Cake\Core\InstanceConfigTrait;
@@ -19,7 +20,7 @@ class Gcm
     protected $_defaultConfig = [
         'api' => [
             'key' => null,
-            'url' => 'https://gcm-http.googleapis.com/gcm/send'
+            'url' => 'https://gcm-http.googleapis.com/gcm/send',
         ],
         'parameters' => [
             'collapse_key' => null,
@@ -27,9 +28,9 @@ class Gcm
             'delay_while_idle' => false,
             'dry_run' => false,
             'time_to_live' => 0,
-            'restricted_package_name' => null
+            'restricted_package_name' => null,
         ],
-        'http' => []
+        'http' => [],
     ];
 
     /**
@@ -49,7 +50,7 @@ class Gcm
         'body_loc_key',
         'body_loc_args',
         'title_loc_key',
-        'title_loc_args'
+        'title_loc_args',
     ];
 
     /**
@@ -73,13 +74,13 @@ class Gcm
      */
     public function __construct(array $config = [])
     {
-        $this->config($config);
+        $this->setConfig($config);
 
         $this->_errorMessages = [
             '400' => __('Error 400. The request could not be parsed as JSON.'),
             '401' => __('Error 401. Unable to authenticating the sender account.'),
             '500' => __('Error 500. Internal Server Error.'),
-            '503' => __('Error 503. Service Unavailable.')
+            '503' => __('Error 503. Service Unavailable.'),
         ];
     }
 
@@ -167,7 +168,7 @@ class Gcm
         $options = $this->_getHttpOptions();
 
         $http = new Client();
-        $this->_response = $http->post($this->config('api.url'), $message, $options);
+        $this->_response = $http->post($this->getConfig('api.url'), $message, $options);
 
         return ($this->_response->code === '200') ? true : false;
     }
@@ -287,7 +288,7 @@ class Gcm
             throw new Exception(__('Parameters must be an array.'));
         }
 
-        $parameters = Hash::merge($this->config('parameters'), $parameters);
+        $parameters = Hash::merge($this->getConfig('parameters'), $parameters);
 
         if (isset($parameters['time_to_live']) && !is_int($parameters['time_to_live'])) {
             $parameters['time_to_live'] = (int)$parameters['time_to_live'];
@@ -312,16 +313,16 @@ class Gcm
      */
     protected function _getHttpOptions()
     {
-        if ($this->config('api.key') === null) {
+        if ($this->getConfig('api.key') === null) {
             throw new Exception(__('No API key set. Push not triggered'));
         }
 
-        $options = Hash::merge($this->config('http'), [
+        $options = Hash::merge($this->getConfig('http'), [
             'type' => 'json',
             'headers' => [
-                'Authorization' => 'key=' . $this->config('api.key'),
-                'Content-Type' => 'application/json'
-            ]
+                'Authorization' => 'key=' . $this->getConfig('api.key'),
+                'Content-Type' => 'application/json',
+            ],
         ]);
 
         return $options;

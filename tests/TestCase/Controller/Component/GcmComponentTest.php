@@ -21,11 +21,10 @@ class GcmComponentTest extends IntegrationTestCase
         parent::setUp();
         $request = new Request();
         $response = new Response();
-        $this->controller = $this->getMock(
-            'Cake\Controller\Controller',
-            null,
-            [$request, $response]
-        );
+        $this->controller = $this->getMockBuilder('Cake\Controller\Controller')
+            ->setConstructorArgs([$request, $response])
+            ->setMethods(null)
+            ->getMock();
         $registry = new ComponentRegistry($this->controller);
         $this->component = new GcmComponent($registry, [
             'api' => [
